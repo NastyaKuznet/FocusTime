@@ -13,6 +13,7 @@ class RegistrationUserUseCaseImpl @Inject constructor(
 ): RegistrationUserUseCase {
 
     override suspend fun invoke(nickname: String, password: String): Boolean {
+
         return remoteDatabaseRepository.registrationUser(nickname, password)
     }
 }
