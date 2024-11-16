@@ -1,23 +1,63 @@
 package com.example.focustime.presentation.authorization
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.focustime.R
+import com.example.focustime.di.ViewModelFactory
+import com.example.focustime.databinding.FragmentAuthorizationBinding
+import com.example.focustime.di.appComponent
+import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import by.kirich1409.viewbindingdelegate.viewBinding
+import javax.inject.Inject
+import com.example.focustime.presentation.registration.RegistrationUiState
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 
 
-class AuthorizationFragment : Fragment() {
+class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val binding: FragmentAuthorizationBinding by viewBinding()
+
+    private val viewModel: AuthorizationUserFragmentViewModel by viewModels() {viewModelFactory}
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(binding){
+            buttonLogin.setOnClickListener {
+                viewModel.authorization(
+                    editTextUsername.text.toString(),
+                    editTextPassword.text.toString())
+            }
+            textViewLogin.setOnClickListener {
+                findNavController().navigate(R.id.action_authorizationFragment_to_registrationFragment)
+            }
+            lifecycleScope.launch {
+                viewModel.uiState.collectLatest { uiState ->
+                    when (uiState) {
+                        is RegistrationUiState.Success -> {
+                            Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
+                        }
+                        is RegistrationUiState.Error -> {
+                            Toast.makeText(requireContext(), "fail", Toast.LENGTH_LONG).show()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+
+        super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_authorization, container, false)
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
     }
 }

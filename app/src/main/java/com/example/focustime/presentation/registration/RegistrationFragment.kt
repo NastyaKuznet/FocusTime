@@ -3,9 +3,7 @@ package com.example.focustime.presentation.registration
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
@@ -15,9 +13,9 @@ import javax.inject.Inject
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.focustime.di.appComponent
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import androidx.navigation.fragment.findNavController
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
@@ -34,6 +32,9 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                 viewModel.registration(
                     editTextUsername.text.toString(),
                     editTextPasswordRegister.text.toString())
+            }
+            textViewLogin.setOnClickListener {
+                findNavController().navigate(R.id.action_registrationFragment_to_authorizationFragment)
             }
             lifecycleScope.launch {
                 viewModel.uiState.collectLatest { uiState ->
@@ -57,5 +58,4 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
         context.appComponent.inject(this)
         super.onAttach(context)
     }
-
 }

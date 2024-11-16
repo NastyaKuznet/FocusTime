@@ -16,4 +16,5 @@ import dagger.Component
 interface AppComponent {
 
     abstract fun inject(fragment: RegistrationFragment)
+    abstract fun inject(fragment: AuthorizationFragment)
 }
