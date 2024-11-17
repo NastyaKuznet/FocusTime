@@ -16,6 +16,7 @@ import com.example.focustime.di.appComponent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
+import com.example.focustime.presentation.models.ResultUIState
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
@@ -32,24 +33,35 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                 viewModel.registration(
                     editTextUsername.text.toString(),
                     editTextPasswordRegister.text.toString())
+
+                lifecycleScope.launch {
+                    viewModel.uiState.collect { uiState ->
+                        when (uiState.resultUIState) {
+                            ResultUIState.Success -> {
+                                Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
+                                val bundle = Bundle()
+                                bundle.putInt("userId", uiState.user.id)
+                                findNavController().navigate(
+                                    R.id.rootFragment,
+                                    bundle)
+                            }
+                            ResultUIState.Error -> {
+                                Toast.makeText(requireContext(), "Соблюдайте условия!", Toast.LENGTH_LONG).show()
+                            }
+                            ResultUIState.AlreadyExists -> {
+                                Toast.makeText(requireContext(), "Имя занято", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {}
+                        }
+                    }
+                }
             }
             textViewLogin.setOnClickListener {
                 findNavController().navigate(R.id.action_registrationFragment_to_authorizationFragment)
             }
-            lifecycleScope.launch {
-                viewModel.uiState.collectLatest { uiState ->
-                    when (uiState) {
-                        is RegistrationUiState.Success -> {
-                            Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
-                        }
-                        is RegistrationUiState.Error -> {
-                            Toast.makeText(requireContext(), "bad", Toast.LENGTH_LONG).show()
-                        }
-                        else -> {}
-                    }
-                }
-            }
+
         }
+
 
         super.onViewCreated(view, savedInstanceState)
     }

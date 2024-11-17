@@ -2,7 +2,12 @@ package com.example.focustime.presentation.registration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.models.User
+import com.example.focustime.data.network.entities.ResultUser
 import com.example.focustime.domain.usecases.RegistrationUserUseCase
+import com.example.focustime.domain.usecases.UserValidation
+import com.example.focustime.presentation.models.ResultUIState
+import com.example.focustime.presentation.models.ResultUIUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,19 +18,33 @@ class RegistrationUserFragmentViewModel @Inject constructor(
     private val registrationUserUseCase: RegistrationUserUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow<RegistrationUiState>(RegistrationUiState.Initial)
-    val uiState: StateFlow<RegistrationUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(
+        ResultUIUser(
+            User(0,"","",""),
+            ResultUIState.Initial)
+    )
+    val uiState: StateFlow<ResultUIUser> = _uiState.asStateFlow()
 
     fun registration(nickname: String, password: String){
-        _uiState.value = RegistrationUiState.Loading
-        viewModelScope.launch {
-            val result = registrationUserUseCase.invoke(nickname, password)
-            _uiState.value = when (result) {
-                true -> RegistrationUiState.Success
-                false -> RegistrationUiState.Error
-            }
+        if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
+            _uiState.value = ResultUIUser(
+                User(0,"","",""),
+                ResultUIState.Error)
+            return
         }
 
+        _uiState.value = ResultUIUser(
+            User(0,"","",""),
+            ResultUIState.Loading)
+
+        viewModelScope.launch {
+            val result = registrationUserUseCase.invoke(nickname, password)
+            _uiState.value = ResultUIUser(result.user,
+                when(result.stateResult){
+                    true -> ResultUIState.Success
+                    false -> ResultUIState.AlreadyExists
+                })
+        }
     }
 
 }
