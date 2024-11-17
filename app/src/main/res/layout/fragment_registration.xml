@@ -28,7 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Пароль"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/buttonRegister"
@@ -44,5 +45,19 @@
         android:layout_gravity="center"
         android:paddingTop="16dp"
         android:padding="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Логин может быть длиною не более
+10 символов, может состоять только из латинских
+букв и (или) цифр" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Пароль может быть длиною
+не менее 8 символов и не более 10 символов,
+может состоять только из латинских букв и (или) цифр" />
 
 </LinearLayout>

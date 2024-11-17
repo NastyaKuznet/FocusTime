@@ -12,11 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import javax.inject.Inject
-import com.example.focustime.presentation.registration.RegistrationUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.focustime.presentation.models.ResultUIState
 
 
 class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
@@ -40,12 +40,17 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
             }
             lifecycleScope.launch {
                 viewModel.uiState.collectLatest { uiState ->
-                    when (uiState) {
-                        is RegistrationUiState.Success -> {
+                    when (uiState.resultUIState) {
+                        ResultUIState.Success -> {
                             Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
+                            val bundle = Bundle()
+                            bundle.putInt("userId", uiState.user.id)
+                            findNavController().navigate(
+                                R.id.rootFragment,
+                                bundle)
                         }
-                        is RegistrationUiState.Error -> {
-                            Toast.makeText(requireContext(), "fail", Toast.LENGTH_LONG).show()
+                        ResultUIState.Error -> {
+                            Toast.makeText(requireContext(), "Пользователь не найден", Toast.LENGTH_LONG).show()
                         }
                         else -> {}
                     }
