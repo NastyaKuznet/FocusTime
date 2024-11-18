@@ -10,6 +10,7 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.User
 import com.example.focustime.data.network.entities.ResultUser
+import com.example.focustime.domain.usecases.UserValidation
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.models.ResultUIUser
 
@@ -25,6 +26,13 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
     val uiState: StateFlow<ResultUIUser> = _uiState.asStateFlow()
 
     fun authorization(nickname: String, password: String){
+        if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
+            _uiState.value = ResultUIUser(
+                User(0,"","",""),
+                ResultUIState.Error)
+            return
+        }
+
         _uiState.value = ResultUIUser(
             User(0,"","",""),
             ResultUIState.Loading)
