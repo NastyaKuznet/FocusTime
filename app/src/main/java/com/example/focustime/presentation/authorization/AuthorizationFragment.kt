@@ -34,28 +34,30 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
                 viewModel.authorization(
                     editTextUsername.text.toString(),
                     editTextPassword.text.toString())
+
+                lifecycleScope.launch {
+                    viewModel.uiState.collectLatest { uiState ->
+                        when (uiState.resultUIState) {
+                            ResultUIState.Success -> {
+                                Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
+                                val bundle = Bundle()
+                                bundle.putInt("userId", uiState.user.id)
+                                findNavController().navigate(
+                                    R.id.rootFragment,
+                                    bundle)
+                            }
+                            ResultUIState.Error -> {
+                                Toast.makeText(requireContext(), "Пользователь не найден", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {}
+                        }
+                    }
+                }
             }
             textViewLogin.setOnClickListener {
                 findNavController().navigate(R.id.action_authorizationFragment_to_registrationFragment)
             }
-            lifecycleScope.launch {
-                viewModel.uiState.collectLatest { uiState ->
-                    when (uiState.resultUIState) {
-                        ResultUIState.Success -> {
-                            Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
-                            val bundle = Bundle()
-                            bundle.putInt("userId", uiState.user.id)
-                            findNavController().navigate(
-                                R.id.rootFragment,
-                                bundle)
-                        }
-                        ResultUIState.Error -> {
-                            Toast.makeText(requireContext(), "Пользователь не найден", Toast.LENGTH_LONG).show()
-                        }
-                        else -> {}
-                    }
-                }
-            }
+
         }
 
         super.onViewCreated(view, savedInstanceState)
