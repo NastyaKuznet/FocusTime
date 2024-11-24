@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_indicator"
+        android:icon="@drawable/ic_indicator"
+        android:title="Индикаторы" />
+    <item
+        android:id="@+id/nav_focus"
+        android:icon="@drawable/ic_focus"
+        android:title="Фокусировка" />
+    <item
+        android:id="@+id/nav_friends"
+        android:icon="@drawable/ic_friends"
+        android:title="Друзья" />
+    <item
+        android:id="@+id/nav_create_indicator"
+        android:icon="@drawable/create_indicator"
+        android:title="Создать" />
+</menu>
