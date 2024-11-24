@@ -36,7 +36,7 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
                     editTextPassword.text.toString())
 
                 lifecycleScope.launch {
-                    viewModel.uiState.collectLatest { uiState ->
+                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
                         when (uiState.resultUIState) {
                             ResultUIState.Success -> {
                                 Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
