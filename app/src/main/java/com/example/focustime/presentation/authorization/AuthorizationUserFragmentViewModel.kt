@@ -1,5 +1,7 @@
 package com.example.focustime.presentation.authorization
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.focustime.domain.usecases.AuthorizationUserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +20,9 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
     private val authorizationUserUseCase: AuthorizationUserUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        ResultUIUser(
-            User(0,"","",""),
-            ResultUIState.Initial)
-    )
-    val uiState: StateFlow<ResultUIUser> = _uiState.asStateFlow()
+    private val _uiState = MutableLiveData<ResultUIUser>()
+    val uiState: LiveData<ResultUIUser>
+        get() = _uiState
 
     fun authorization(nickname: String, password: String){
         if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
