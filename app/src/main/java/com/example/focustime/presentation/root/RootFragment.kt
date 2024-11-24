@@ -7,11 +7,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
 import com.example.focustime.databinding.FragmentRootBinding
 import com.example.focustime.di.ViewModelFactory
-import com.example.focustime.presentation.navigation.FocusFragment
-import com.example.focustime.presentation.navigation.FriendsFragment
-import com.example.focustime.presentation.navigation.IndicatorsFragment
-import com.example.focustime.presentation.navigation.TypesIndicatorsFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.focustime.presentation.focus.FocusFragment
+import com.example.focustime.presentation.friends.FriendsFragment
+import com.example.focustime.presentation.indicators.IndicatorsFragment
+import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorsFragment
 import javax.inject.Inject
 
 class RootFragment: Fragment(R.layout.fragment_root) {
@@ -39,7 +38,7 @@ class RootFragment: Fragment(R.layout.fragment_root) {
                 R.id.nav_focus -> makeCurrentFragment(FocusFragment())
                 R.id.nav_friends -> makeCurrentFragment(FriendsFragment())
                 R.id.nav_indicator -> makeCurrentFragment(IndicatorsFragment())
-                R.id.nav_create_indicator -> makeCurrentFragment(TypesIndicatorsFragment())
+                R.id.nav_create_indicator -> makeCurrentFragment(CreateTypeIndicatorsFragment())
             }
             true
         }

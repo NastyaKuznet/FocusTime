@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.navigation
+package com.example.focustime.presentation.createTypeIndicator
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.focustime.R
 
-class TypesIndicatorsFragment : Fragment() {
+class CreateTypeIndicatorsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -17,6 +17,6 @@ class TypesIndicatorsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_types_indicators, container, false)
+        return inflater.inflate(R.layout.fragment_create_type_indicators, container, false)
     }
 }

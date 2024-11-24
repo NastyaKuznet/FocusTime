@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.navigation
+package com.example.focustime.presentation.focus
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
