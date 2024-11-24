@@ -1,5 +1,7 @@
 package com.example.focustime.presentation.authorization
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.focustime.domain.usecases.AuthorizationUserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +12,7 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.User
 import com.example.focustime.data.network.entities.ResultUser
+import com.example.focustime.domain.usecases.UserValidation
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.models.ResultUIUser
 
@@ -17,14 +20,18 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
     private val authorizationUserUseCase: AuthorizationUserUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        ResultUIUser(
-            User(0,"","",""),
-            ResultUIState.Initial)
-    )
-    val uiState: StateFlow<ResultUIUser> = _uiState.asStateFlow()
+    private val _uiState = MutableLiveData<ResultUIUser>()
+    val uiState: LiveData<ResultUIUser>
+        get() = _uiState
 
     fun authorization(nickname: String, password: String){
+        if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
+            _uiState.value = ResultUIUser(
+                User(0,"","",""),
+                ResultUIState.Error)
+            return
+        }
+
         _uiState.value = ResultUIUser(
             User(0,"","",""),
             ResultUIState.Loading)

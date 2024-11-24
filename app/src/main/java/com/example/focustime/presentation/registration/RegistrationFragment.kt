@@ -35,7 +35,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                     editTextPasswordRegister.text.toString())
 
                 lifecycleScope.launch {
-                    viewModel.uiState.collect { uiState ->
+                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
                         when (uiState.resultUIState) {
                             ResultUIState.Success -> {
                                 Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
