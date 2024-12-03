@@ -3,6 +3,7 @@ package com.example.focustime.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.focustime.presentation.authorization.AuthorizationUserFragmentViewModel
+import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,4 +24,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RegistrationUserFragmentViewModel::class)
     abstract fun bindRegistrationUserFragmentViewModel(viewModel: RegistrationUserFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NewTypeIndicatorViewModel::class)
+    abstract fun bindNewTypeIndicatorViewModel(viewModel: NewTypeIndicatorViewModel): ViewModel
 }

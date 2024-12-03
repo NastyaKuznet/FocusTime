@@ -25,12 +25,12 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
         get() = _uiState
 
     fun authorization(nickname: String, password: String){
-        if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
+        /*if(!UserValidation().validationRegistrationOrAuthorization(nickname, password)){
             _uiState.value = ResultUIUser(
                 User(0,"","",""),
                 ResultUIState.Error)
             return
-        }
+        }*/
 
         _uiState.value = ResultUIUser(
             User(0,"","",""),
