@@ -1,15 +1,17 @@
 package com.example.focustime.data.network.repositories
 
+import android.util.Log
 import com.example.focustime.data.models.*
 import com.example.focustime.data.network.entities.ResultUser
-import com.example.focustime.data.network.entities.request.AddTypeIndicatorBody
-import com.example.focustime.data.network.entities.request.UserAuthAndRegistrationRequest
+import com.example.focustime.data.network.entities.request.*
 import com.example.focustime.data.network.services.RemoteDatabaseService
+import com.google.gson.Gson
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.io.File
+import java.io.InputStream
 import javax.inject.Inject
 
 interface RemoteDatabaseRepository {
@@ -18,6 +20,10 @@ interface RemoteDatabaseRepository {
     suspend fun authorizationUser(nickname: String, password: String): ResultUser
     suspend fun addTypeIndicator(id: Int, typeName: String, images: List<Int>): Boolean
     suspend fun uploadImage(file: File): Int
+    suspend fun getAllIndicators(idUser: Int): List<TypeIndicator>
+    suspend fun getImagesIds(idType: Int): List<Int>
+    suspend fun getImage(idImage: Int): InputStream?
+    suspend fun deleteTypeIndicator(idType: Int): Boolean
 }
 
 class RemoteDatabaseRepositoryImpl @Inject constructor(
@@ -78,4 +84,61 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun getAllIndicators(idUser: Int): List<TypeIndicator> {
+        try {
+            return service.getAllIndicators(IdUserRequestBody(idUser))
+        } catch (e: Exception) {
+            return listOf()
+        }
+    }
+
+    override suspend fun getImagesIds(idType: Int): List<Int> {
+        try {
+            val result = service.getImagesIds(IdTypeIndicatorRequestBody(idType))
+            val list = mutableListOf<Int>()
+            for( el in result)
+                list.add(el.idimage)
+            return list
+        } catch (e: Exception) {
+            return listOf()
+        }
+    }
+
+    override suspend fun getImage(idImage: Int): InputStream? {
+        try {
+            val imageRequest = IdImageRequestBody(idImage)
+            val gson = Gson()
+            val jsonBody = gson.toJson(imageRequest)
+            val requestBody =
+                RequestBody.create(MediaType.parse("application/json"), jsonBody)
+            val response = service.getImage(requestBody)
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    val inputStream = responseBody.byteStream()
+                    return inputStream
+                } else {
+                    Log.e("ImageLoad", "Response body is null")
+                }
+            } else {
+                Log.e("ImageLoad", "Unsuccessful response code: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+        return null
+    }
+
+    override suspend fun deleteTypeIndicator(idType: Int): Boolean {
+        try {
+            service.deleteTypeIndicator(IdTypeIndicatorRequestBody(idType))
+            return true
+        } catch (e: Exception) {
+            throw e
+            return false
+        }
+    }
+
+
 }

@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.focustime.presentation.authorization.AuthorizationUserFragmentViewModel
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorViewModel
+import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorViewModel
+import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
 import dagger.Binds
 import dagger.Module
@@ -29,4 +31,14 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NewTypeIndicatorViewModel::class)
     abstract fun bindNewTypeIndicatorViewModel(viewModel: NewTypeIndicatorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateTypeIndicatorViewModel::class)
+    abstract fun bindCreateTypeIndicatorViewModel(viewModel: CreateTypeIndicatorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OpenTypeIndicatorViewModel::class)
+    abstract fun bindOpenTypeIndicatorViewModel(viewModel: OpenTypeIndicatorViewModel): ViewModel
 }

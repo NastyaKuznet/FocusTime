@@ -23,4 +23,12 @@ interface AppBindsModule {
     @Binds
     fun bindAddTypeIndicatorUseCase(repository: AddTypeIndicatorUseCaseImpl): AddTypeIndicatorUseCase
 
+    @Binds
+    fun bindGetTypesIndicatorsUseCase(repository: GetTypesIndicatorsUseCaseImpl): GetTypesIndicatorsUseCase
+
+    @Binds
+    fun bindGetImagesUseCase(repository: GetImagesUseCaseImpl): GetImagesUseCase
+
+    @Binds
+    fun bindDeleteTypeIndicatorUseCase(repository: DeleteTypeIndicatorUseCaseImpl): DeleteTypeIndicatorUseCase
 }
