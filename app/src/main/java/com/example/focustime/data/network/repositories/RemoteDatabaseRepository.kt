@@ -20,10 +20,12 @@ interface RemoteDatabaseRepository {
     suspend fun authorizationUser(nickname: String, password: String): ResultUser
     suspend fun addTypeIndicator(id: Int, typeName: String, images: List<Int>): Boolean
     suspend fun uploadImage(file: File): Int
-    suspend fun getAllIndicators(idUser: Int): List<TypeIndicator>
+    suspend fun getAllTypeIndicators(idUser: Int): List<TypeIndicator>
     suspend fun getImagesIds(idType: Int): List<Int>
     suspend fun getImage(idImage: Int): InputStream?
     suspend fun deleteTypeIndicator(idType: Int): Boolean
+    suspend fun addIndicator(userId: Int, interval: Int, type: Int, date: String): Boolean
+    suspend fun getAllIndicators(userId: Int): List<Indicator>
 }
 
 class RemoteDatabaseRepositoryImpl @Inject constructor(
@@ -85,9 +87,9 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllIndicators(idUser: Int): List<TypeIndicator> {
+    override suspend fun getAllTypeIndicators(idUser: Int): List<TypeIndicator> {
         try {
-            return service.getAllIndicators(IdUserRequestBody(idUser))
+            return service.getAllTypesIndicators(IdUserRequestBody(idUser))
         } catch (e: Exception) {
             return listOf()
         }
@@ -137,6 +139,29 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             throw e
             return false
+        }
+    }
+
+    override suspend fun addIndicator(
+        userId: Int,
+        interval: Int,
+        type: Int,
+        date: String
+    ): Boolean {
+        try {
+            service.addIndicator(AddIndicatorBody(userId, interval, type, date))
+            return true
+        } catch (e: Exception) {
+            throw e
+            return false
+        }
+    }
+
+    override suspend fun getAllIndicators(userId: Int): List<Indicator> {
+        try {
+            return service.getAllIndicators(IdUserRequestBody(userId))
+        } catch (e: Exception){
+            throw e
         }
     }
 

@@ -31,4 +31,7 @@ interface AppBindsModule {
 
     @Binds
     fun bindDeleteTypeIndicatorUseCase(repository: DeleteTypeIndicatorUseCaseImpl): DeleteTypeIndicatorUseCase
+
+    @Binds
+    fun bindAddIndicatorUseCase(repository: AddIndicatorUseCaseImpl): AddIndicatorUseCase
 }

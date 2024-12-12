@@ -14,7 +14,7 @@ class GetTypesIndicatorsUseCaseImpl @Inject constructor(
 ): GetTypesIndicatorsUseCase{
 
     override suspend fun invoke(idUser: Int): List<TypeIndicator> {
-        return remoteDatabaseRepository.getAllIndicators(idUser)
+        return remoteDatabaseRepository.getAllTypeIndicators(idUser)
     }
 
 }

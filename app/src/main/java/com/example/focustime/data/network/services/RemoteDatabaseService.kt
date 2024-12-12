@@ -25,7 +25,7 @@ interface RemoteDatabaseService {
     suspend fun uploadImage(@Part image: MultipartBody.Part): Int
 
     @POST("/typesindicators")
-    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): List<TypeIndicator>
+    suspend fun getAllTypesIndicators(@Body requestBody: IdUserRequestBody): List<TypeIndicator>
 
     @POST("/get-image-id")
     suspend fun getImagesIds(@Body requestBody: IdTypeIndicatorRequestBody): List<IdImageResponse>
@@ -35,4 +35,10 @@ interface RemoteDatabaseService {
 
     @POST("/delete-type-indicator")
     suspend fun deleteTypeIndicator(@Body requestBody: IdTypeIndicatorRequestBody)
+
+    @POST("/allindicators")
+    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): List<Indicator>
+
+    @POST("/addindicator")
+    suspend fun addIndicator(@Body requestBody: AddIndicatorBody)
 }
