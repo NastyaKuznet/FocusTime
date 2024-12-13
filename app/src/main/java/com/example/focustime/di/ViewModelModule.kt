@@ -6,6 +6,7 @@ import com.example.focustime.presentation.authorization.AuthorizationUserFragmen
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorViewModel
 import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorViewModel
 import com.example.focustime.presentation.focus.FocusViewModel
+import com.example.focustime.presentation.indicators.IndicatorsViewModel
 import com.example.focustime.presentation.newFocus.NewFocusViewModel
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
@@ -53,4 +54,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NewFocusViewModel::class)
     abstract fun bindNewFocusViewModel(viewModel: NewFocusViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(IndicatorsViewModel::class)
+    abstract fun bindIndicatorsViewModel(viewModel: IndicatorsViewModel): ViewModel
 }

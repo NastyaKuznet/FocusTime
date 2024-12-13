@@ -34,4 +34,7 @@ interface AppBindsModule {
 
     @Binds
     fun bindAddIndicatorUseCase(repository: AddIndicatorUseCaseImpl): AddIndicatorUseCase
+
+    @Binds
+    fun bindAllIndicatorsUseCase(repository: GetAllIndicatorsUseCaseImpl): GetAllIndicatorsUseCase
 }

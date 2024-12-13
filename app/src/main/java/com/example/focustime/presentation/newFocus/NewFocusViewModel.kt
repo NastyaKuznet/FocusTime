@@ -1,5 +1,6 @@
 package com.example.focustime.presentation.newFocus
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,11 +21,11 @@ class NewFocusViewModel @Inject constructor(
     private val addIndicatorUseCase: AddIndicatorUseCase,
 ): ViewModel() {
 
-    private val _time = MutableLiveData<Long>(0L)
+    private val _time = MutableLiveData(0L)
     val time: LiveData<Long>
         get() = _time
 
-    private val _stateTime = MutableLiveData<Boolean>(false)
+    private val _stateTime = MutableLiveData(false)
     val stateTime: LiveData<Boolean>
         get() = _stateTime
 
@@ -37,17 +38,23 @@ class NewFocusViewModel @Inject constructor(
 
 
     fun startTimer(endTime: Long, idType: Int) {
-        loadImages(idType)
+
         val endT = endTime * 60
         val step = endT / 5//константа стадий
         var count = 0
         job = viewModelScope.launch {
+            val result = getImagesUseCase(idType)
+            images.value = result.toMutableList()
+
             while (_time.value != endT) {
                 delay(1000L)
                 if(_time.value!! % step == 0L){
                     _selectedImage.value = images.value?.get(count)
                     count++
                 }
+                if(_selectedImage.value == null){
+                    _selectedImage.value = images.value?.get(count)
+                                    }
                 _time.value = (_time.value ?: 0L) + 1L
 
             }
@@ -63,15 +70,4 @@ class NewFocusViewModel @Inject constructor(
         job = null
     }
 
-    fun resetTimer() {
-        pauseTimer()
-        _time.value = 0L
-    }
-
-    fun loadImages(idType: Int){
-        viewModelScope.launch {
-            val result = getImagesUseCase(idType)
-            images.value = result.toMutableList()
-        }
-    }
 }
