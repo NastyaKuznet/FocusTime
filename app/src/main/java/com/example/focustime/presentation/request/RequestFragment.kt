@@ -13,6 +13,7 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.addFriends.AddFriendsFragment
 import com.example.focustime.presentation.friends.FriendsAdapter
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch

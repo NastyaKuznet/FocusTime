@@ -1,9 +1,11 @@
 package com.example.focustime.data.network.services
 
 import com.example.focustime.data.models.*
+import com.example.focustime.data.network.entities.ResultSendFriendRequest
 import com.example.focustime.data.network.entities.request.*
 import com.example.focustime.presentation.friends.Friend
 import retrofit2.http.*
+import retrofit2.Response
 
 interface RemoteDatabaseService {
 
@@ -18,4 +20,10 @@ interface RemoteDatabaseService {
 
     @POST("/request")
     suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>
+
+    @POST("/addFriend")
+    suspend fun addFriend(@Body requestBody: AddFriendsRequest)
+
+    @PUT("/sendFriendRequest")
+    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)
 }

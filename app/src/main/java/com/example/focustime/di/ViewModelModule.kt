@@ -2,6 +2,7 @@ package com.example.focustime.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.focustime.presentation.addFriends.AddFriendsFragmentViewModel
 import com.example.focustime.presentation.authorization.AuthorizationUserFragmentViewModel
 import com.example.focustime.presentation.friends.FriendsFragmentViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
@@ -35,4 +36,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RequestFragmentViewModel::class)
     abstract fun bindRequestFragmentViewModel(viewModel: RequestFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddFriendsFragmentViewModel::class)
+    abstract fun bindAddFriendsViewModel(viewModel: AddFriendsFragmentViewModel): ViewModel
 }

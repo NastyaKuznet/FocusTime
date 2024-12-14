@@ -10,6 +10,8 @@ import com.example.focustime.domain.usecases.GetRequestUseCase
 import com.example.focustime.domain.usecases.GetRequestUseCaseImpl
 import com.example.focustime.domain.usecases.RegistrationUserUseCase
 import com.example.focustime.domain.usecases.RegistrationUserUseCaseImpl
+import com.example.focustime.domain.usecases.SendFriendRequestUseCase
+import com.example.focustime.domain.usecases.SendFriendRequestUseCaseImpl
 import dagger.Binds
 import dagger.Module
 
@@ -30,4 +32,7 @@ interface AppBindsModule {
 
     @Binds
     fun bindGetRequestUseCase(repository: GetRequestUseCaseImpl): GetRequestUseCase
+
+    @Binds
+    fun bindSendFriendRequestUseCase(repository: SendFriendRequestUseCaseImpl): SendFriendRequestUseCase
 }

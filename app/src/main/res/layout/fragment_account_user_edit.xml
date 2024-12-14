@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".presentation.addFriends.AddFriendsFragment">
+    tools:context=".presentation.accountUser.AccountUserEditFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,28 +18,33 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Добавить друга"
+            android:text="Экран профиля"
             android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/white"/>
     </LinearLayout>
 
     <EditText
-        android:id="@+id/focusTimeInput"
+        android:id="@+id/editUserNickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Введите ник пользователя"/>
+        android:hint="User Nickname"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"
+        android:layout_marginVertical="32dp"/>
+
+    <EditText
+        android:id="@+id/editUserStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="User Status"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/buttonAdd"
-        android:layout_width="143dp"
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="130dp"
-        android:text="Добавить" />
+        android:text="Save"
+        android:textColor="@android:color/white"
+        android:layout_marginVertical="32dp"/>
 
 </LinearLayout>
