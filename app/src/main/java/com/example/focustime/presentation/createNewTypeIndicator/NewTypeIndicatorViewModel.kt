@@ -31,8 +31,7 @@ class NewTypeIndicatorViewModel @Inject constructor(
         _selectedImages.value = list
     }
 
-    //id usera
-    fun save(context: Context, typeName: String){
+    fun save(context: Context, typeName: String, userId: Int){
         val listId = mutableListOf<Int>()
         if(typeName.isEmpty() || selectedImages.value == null){
             _resultSave.value = StateSave.EMPTYFIELD
@@ -45,7 +44,7 @@ class NewTypeIndicatorViewModel @Inject constructor(
                     listId.add(uploadImageUseCase(file))
                 }
             }
-            val result = addTypeIndicatorUseCase(1, typeName, listId)
+            val result = addTypeIndicatorUseCase(userId, typeName, listId)
             _resultSave.value = if (result) StateSave.SAVED else StateSave.NOSAVED
         }
     }

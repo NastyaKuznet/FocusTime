@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".presentation.indicators.IndicatorsFragment">
+    tools:context=".presentation.accountUser.AccountUserEditFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,36 +18,33 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Типы индикаторов"
+            android:text="Экран профиля"
             android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/white"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/indicatorListTitle"
+    <EditText
+        android:id="@+id/editUserNickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Список типов индикатора"
-        android:padding="16dp"
-        android:textSize="18sp" />
+        android:hint="User Nickname"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"
+        android:layout_marginVertical="32dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/indicatorList"
+    <EditText
+        android:id="@+id/editUserStatus"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp" />
+        android:layout_height="wrap_content"
+        android:hint="User Status"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/createIndicatorButton"
+        android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Создать новый тип индикатора"
-        android:layout_margin="16dp"/>
+        android:text="Save"
+        android:textColor="@android:color/white"
+        android:layout_marginVertical="32dp"/>
 
 </LinearLayout>

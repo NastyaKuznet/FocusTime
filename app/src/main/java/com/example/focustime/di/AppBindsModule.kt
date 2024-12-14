@@ -37,4 +37,12 @@ interface AppBindsModule {
 
     @Binds
     fun bindAllIndicatorsUseCase(repository: GetAllIndicatorsUseCaseImpl): GetAllIndicatorsUseCase
+    @Binds
+    fun bindGetFriendsUseCase(repository: GetFriendsUseCaseImpl): GetFriendsUseCase
+
+    @Binds
+    fun bindGetRequestUseCase(repository: GetRequestUseCaseImpl): GetRequestUseCase
+
+    @Binds
+    fun bindSendFriendRequestUseCase(repository: SendFriendRequestUseCaseImpl): SendFriendRequestUseCase
 }

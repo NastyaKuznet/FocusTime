@@ -39,6 +39,11 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
         with(binding){
             load.setOnClickListener {
                 binding.containerImages.removeAllViews()
@@ -48,7 +53,7 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
                 startActivityForResult(intent, PICK_IMAGE_REQUEST)
             }
             save.setOnClickListener {
-                viewModel.save(requireContext(), etInputName.text.toString())
+                viewModel.save(requireContext(), etInputName.text.toString(), userId)
                 lifecycleScope.launch {
                     viewModel.resultSave.observe(viewLifecycleOwner) { resultSave ->
                         when (resultSave) {

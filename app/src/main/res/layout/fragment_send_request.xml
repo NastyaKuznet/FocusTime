@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".presentation.indicators.IndicatorsFragment">
+    tools:context=".presentation.sendRequest.SendRequestFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Типы индикаторов"
+            android:text="Добавить друга"
             android:textSize="18sp" />
 
         <ImageView
@@ -28,26 +28,18 @@
             android:background="@color/white"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/indicatorListTitle"
+    <EditText
+        android:id="@+id/focusTimeInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Список типов индикатора"
-        android:padding="16dp"
-        android:textSize="18sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/indicatorList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp" />
+        android:layout_margin="16dp"
+        android:hint="Введите ник пользователя"/>
 
     <Button
-        android:id="@+id/createIndicatorButton"
-        android:layout_width="match_parent"
+        android:id="@+id/buttonAdd"
+        android:layout_width="143dp"
         android:layout_height="wrap_content"
-        android:text="Создать новый тип индикатора"
-        android:layout_margin="16dp"/>
+        android:layout_marginHorizontal="130dp"
+        android:text="Добавить" />
 
 </LinearLayout>

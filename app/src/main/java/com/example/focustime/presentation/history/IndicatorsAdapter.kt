@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.indicators
+package com.example.focustime.presentation.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

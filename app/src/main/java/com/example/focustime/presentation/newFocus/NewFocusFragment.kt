@@ -29,8 +29,13 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
         val time = arguments?.getLong("time")
         val idType = arguments?.getInt("idType")
 
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+
         if(time != null && idType != null)
-            viewModel.startTimer(time, idType)
+            viewModel.startTimer(time, idType, userId)
 
         viewModel.time.observe(viewLifecycleOwner) { timeInSeconds ->
             val time = formatTime(timeInSeconds)
@@ -59,7 +64,7 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
                     viewModel.pauseTimer()
                     pause.text = "Продолжить"
                 } else {
-                    viewModel.startTimer(time!!, idType!!)
+                    viewModel.startTimer(time!!, idType!!, userId)
                     pause.text = "Пауза"
                 }
             }
