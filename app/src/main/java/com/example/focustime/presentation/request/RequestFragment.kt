@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.friends
+package com.example.focustime.presentation.request
 
 import android.content.Context
 import android.os.Bundle
@@ -10,30 +10,30 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
-import com.example.focustime.databinding.FragmentFriendsBinding
+import com.example.focustime.databinding.FragmentRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.addFriends.AddFriendsFragment
+import com.example.focustime.presentation.friends.FriendsAdapter
 import com.example.focustime.presentation.models.ResultUIState
-import com.example.focustime.presentation.request.RequestFragment
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class FriendsFragment : Fragment(R.layout.fragment_friends) {
+class RequestFragment : Fragment(R.layout.fragment_request) {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val binding: FragmentFriendsBinding by viewBinding()
+    private val binding: FragmentRequestBinding by viewBinding()
 
-    private val viewModel: FriendsFragmentViewModel by viewModels { viewModelFactory }
+    private val viewModel: RequestFragmentViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val friendsAdapter = FriendsAdapter(emptyList())
-        friendsAdapter.GetfriendOrRequest(0)
-        binding.friendsList.adapter = friendsAdapter
-        binding.friendsList.layoutManager = LinearLayoutManager(context)
+        friendsAdapter.GetfriendOrRequest(1)
+        binding.requestList.adapter = friendsAdapter
+        binding.requestList.layoutManager = LinearLayoutManager(context)
 
         lifecycleScope.launch {
             viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
@@ -58,24 +58,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         }
         viewModel.loadFriends(userId)
 
-        binding.addFriendButton.setOnClickListener {
-            makeCurrentFragment(AddFriendsFragment())
-        }
-
-        binding.friendRequestsButton.setOnClickListener {
-            makeCurrentFragment(RequestFragment())
-        }
+        //friendsAdapter.showTwoFriends()
     }
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 }

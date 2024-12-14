@@ -41,6 +41,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                                 Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
                                 val bundle = Bundle()
                                 bundle.putInt("userId", uiState.user.id)
+                                saveUserIdToPreferences(requireContext(), uiState.user.id)
                                 findNavController().navigate(
                                     R.id.rootFragment,
                                     bundle)
@@ -64,6 +65,13 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    fun saveUserIdToPreferences(context: Context, userId: Int) {
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("userId", userId)
+        editor.apply()
     }
 
     override fun onAttach(context: Context) {
