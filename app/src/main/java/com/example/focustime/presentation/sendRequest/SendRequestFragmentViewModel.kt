@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.addFriends
+package com.example.focustime.presentation.sendRequest
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,7 @@ import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddFriendsFragmentViewModel  @Inject constructor(
+class SendRequestFragmentViewModel  @Inject constructor(
     private val sendFriendRequestUseCase: SendFriendRequestUseCase
 ) : ViewModel() {
 

@@ -2,9 +2,7 @@ package com.example.focustime.presentation.openTypeIndicator
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,14 +11,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
 import com.example.focustime.databinding.FragmentOpenTypeIndicatorBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
-import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorsFragment
+import com.example.focustime.presentation.indicators.IndicatorsFragment
 import kotlinx.coroutines.launch
 import java.io.InputStream
 import javax.inject.Inject
@@ -106,7 +102,7 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
     }
 
     private fun goScreenOpenTypeIndicator(){
-        val fr = CreateTypeIndicatorsFragment()
+        val fr = IndicatorsFragment()
         getParentFragmentManager()
             .beginTransaction()
             .replace(R.id.fragment_container, fr, "OPEN_TYPE_INDICATOR_FRAGMENT_TAG")

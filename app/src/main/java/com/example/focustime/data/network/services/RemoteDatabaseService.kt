@@ -13,46 +13,48 @@ import retrofit2.http.*
 
 interface RemoteDatabaseService {
 
+    //Response
+
     @POST("/authorization")
-    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): User
+    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): User //L
 
     @POST("/registration")
-    suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): User
+    suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): User//N
 
     @POST("/add-type-indicator")
-    suspend fun addTypeIndicator(@Body requestBody: AddTypeIndicatorBody)
+    suspend fun addTypeIndicator(@Body requestBody: AddTypeIndicatorBody)//N
 
     @Multipart
     @POST("/upload-image")
-    suspend fun uploadImage(@Part image: MultipartBody.Part): Int
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Int//N
 
     @POST("/typesindicators")
-    suspend fun getAllTypesIndicators(@Body requestBody: IdUserRequestBody): List<TypeIndicator>
+    suspend fun getAllTypesIndicators(@Body requestBody: IdUserRequestBody): List<TypeIndicator>//N
 
     @POST("/get-image-id")
-    suspend fun getImagesIds(@Body requestBody: IdTypeIndicatorRequestBody): List<IdImageResponse>
+    suspend fun getImagesIds(@Body requestBody: IdTypeIndicatorRequestBody): List<IdImageResponse>//N
 
     @POST("/image")
-    suspend fun getImage(@Body requestBody: RequestBody): Response<ResponseBody>
+    suspend fun getImage(@Body requestBody: RequestBody): Response<ResponseBody>//N
 
     @POST("/delete-type-indicator")
-    suspend fun deleteTypeIndicator(@Body requestBody: IdTypeIndicatorRequestBody)
+    suspend fun deleteTypeIndicator(@Body requestBody: IdTypeIndicatorRequestBody)//N
 
     @POST("/allindicators")
-    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): List<Indicator>
+    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): List<Indicator>//N
 
     @POST("/addindicator")
-    suspend fun addIndicator(@Body requestBody: AddIndicatorBody)
+    suspend fun addIndicator(@Body requestBody: AddIndicatorBody)//N
 
     @POST("/allfriend")
-    suspend fun getFriends(@Body requestBody: GetFriendsRequest): List<Friend>
+    suspend fun getFriends(@Body requestBody: GetFriendsRequest): List<Friend>//L
 
     @POST("/request")
-    suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>
+    suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>//L
 
     @POST("/addFriend")
-    suspend fun addFriend(@Body requestBody: AddFriendsRequest)
+    suspend fun addFriend(@Body requestBody: AddFriendsRequest)//L
 
     @PUT("/sendFriendRequest")
-    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)
+    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)//L
 }

@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.createTypeIndicator
+package com.example.focustime.presentation.indicators
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

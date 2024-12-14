@@ -3,20 +3,14 @@ package com.example.focustime.presentation.focus
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
-import com.example.focustime.databinding.FragmentCreateTypeIndicatorsBinding
 import com.example.focustime.databinding.FragmentFocusBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
-import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorViewModel
 import com.example.focustime.presentation.newFocus.NewFocusFragment
 import javax.inject.Inject
 
@@ -32,7 +26,12 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getTypesIndicators(1)//!!!
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+
+        viewModel.getTypesIndicators(userId)
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
             if(it != null){
                 val periods = it

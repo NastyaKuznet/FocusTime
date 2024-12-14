@@ -2,17 +2,17 @@ package com.example.focustime.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.focustime.presentation.addFriends.AddFriendsFragmentViewModel
+import com.example.focustime.presentation.sendRequest.SendRequestFragmentViewModel
 import com.example.focustime.presentation.authorization.AuthorizationUserFragmentViewModel
 import com.example.focustime.presentation.friends.FriendsFragmentViewModel
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorViewModel
-import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorViewModel
-import com.example.focustime.presentation.focus.FocusViewModel
 import com.example.focustime.presentation.indicators.IndicatorsViewModel
+import com.example.focustime.presentation.focus.FocusViewModel
+import com.example.focustime.presentation.history.HistoryViewModel
 import com.example.focustime.presentation.newFocus.NewFocusViewModel
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
-import com.example.focustime.presentation.request.RequestFragmentViewModel
+import com.example.focustime.presentation.accept_request.AcceptRequestFragmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -40,13 +40,13 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(RequestFragmentViewModel::class)
-    abstract fun bindRequestFragmentViewModel(viewModel: RequestFragmentViewModel): ViewModel
+    @ViewModelKey(AcceptRequestFragmentViewModel::class)
+    abstract fun bindRequestFragmentViewModel(viewModel: AcceptRequestFragmentViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(AddFriendsFragmentViewModel::class)
-    abstract fun bindAddFriendsViewModel(viewModel: AddFriendsFragmentViewModel): ViewModel
+    @ViewModelKey(SendRequestFragmentViewModel::class)
+    abstract fun bindAddFriendsViewModel(viewModel: SendRequestFragmentViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -55,8 +55,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CreateTypeIndicatorViewModel::class)
-    abstract fun bindCreateTypeIndicatorViewModel(viewModel: CreateTypeIndicatorViewModel): ViewModel
+    @ViewModelKey(IndicatorsViewModel::class)
+    abstract fun bindCreateTypeIndicatorViewModel(viewModel: IndicatorsViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -75,6 +75,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(IndicatorsViewModel::class)
-    abstract fun bindIndicatorsViewModel(viewModel: IndicatorsViewModel): ViewModel
+    @ViewModelKey(HistoryViewModel::class)
+    abstract fun bindIndicatorsViewModel(viewModel: HistoryViewModel): ViewModel
 }

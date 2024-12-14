@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.request
+package com.example.focustime.presentation.accept_request
 
 import android.content.Context
 import android.os.Bundle
@@ -10,22 +10,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
-import com.example.focustime.databinding.FragmentRequestBinding
+import com.example.focustime.databinding.FragmentAcceptRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.addFriends.AddFriendsFragment
 import com.example.focustime.presentation.friends.FriendsAdapter
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RequestFragment : Fragment(R.layout.fragment_request) {
+class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val binding: FragmentRequestBinding by viewBinding()
+    private val binding: FragmentAcceptRequestBinding by viewBinding()
 
-    private val viewModel: RequestFragmentViewModel by viewModels { viewModelFactory }
+    private val viewModel: AcceptRequestFragmentViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

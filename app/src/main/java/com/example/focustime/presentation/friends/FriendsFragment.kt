@@ -13,9 +13,9 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentFriendsBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.addFriends.AddFriendsFragment
+import com.example.focustime.presentation.sendRequest.SendRequestFragment
 import com.example.focustime.presentation.models.ResultUIState
-import com.example.focustime.presentation.request.RequestFragment
+import com.example.focustime.presentation.accept_request.AcceptRequestFragment
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -59,11 +59,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         viewModel.loadFriends(userId)
 
         binding.addFriendButton.setOnClickListener {
-            makeCurrentFragment(AddFriendsFragment())
+            makeCurrentFragment(SendRequestFragment())
         }
 
         binding.friendRequestsButton.setOnClickListener {
-            makeCurrentFragment(RequestFragment())
+            makeCurrentFragment(AcceptRequestFragment())
         }
     }
 

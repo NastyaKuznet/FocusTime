@@ -37,10 +37,10 @@ class NewFocusViewModel @Inject constructor(
     private var images = MutableLiveData<MutableList<InputStream>>()
 
 
-    fun startTimer(endTime: Long, idType: Int) {
+    fun startTimer(endTime: Long, idType: Int, userId: Int) {
 
         val endT = endTime * 60
-        val step = endT / 5//константа стадий
+        val step = endT / 5 //константа стадий
         var count = 0
         job = viewModelScope.launch {
             val result = getImagesUseCase(idType)
@@ -60,7 +60,7 @@ class NewFocusViewModel @Inject constructor(
             }
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val formattedDateTime = formatter.format(Date())
-            addIndicatorUseCase(1, endT.toInt(), idType, formattedDateTime)
+            addIndicatorUseCase(userId, endT.toInt(), idType, formattedDateTime)
             _stateTime.value = true
         }
     }

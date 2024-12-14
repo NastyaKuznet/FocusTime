@@ -3,11 +3,11 @@
     <item
         android:id="@+id/nav_indicator"
         android:icon="@drawable/ic_indicator"
-        android:title="Индикаторы" />
+        android:title="История" />
     <item
         android:id="@+id/nav_focus"
         android:icon="@drawable/ic_focus"
-        android:title="Фокусировка" />
+        android:title="Фокус" />
     <item
         android:id="@+id/nav_friends"
         android:icon="@drawable/ic_friends"
@@ -15,5 +15,5 @@
     <item
         android:id="@+id/nav_create_indicator"
         android:icon="@drawable/create_indicator"
-        android:title="Создать" />
+        android:title="Индикаторы" />
 </menu>

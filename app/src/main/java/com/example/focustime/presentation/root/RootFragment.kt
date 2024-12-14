@@ -9,8 +9,8 @@ import com.example.focustime.databinding.FragmentRootBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.presentation.focus.FocusFragment
 import com.example.focustime.presentation.friends.FriendsFragment
+import com.example.focustime.presentation.history.HistoryFragment
 import com.example.focustime.presentation.indicators.IndicatorsFragment
-import com.example.focustime.presentation.createTypeIndicator.CreateTypeIndicatorsFragment
 import javax.inject.Inject
 
 class RootFragment: Fragment(R.layout.fragment_root) {
@@ -31,14 +31,14 @@ class RootFragment: Fragment(R.layout.fragment_root) {
             content.text = "Welcome!\nТвой id: $userId"
         }*/
 
-        makeCurrentFragment(IndicatorsFragment())
+        makeCurrentFragment(HistoryFragment())
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_focus -> makeCurrentFragment(FocusFragment())
                 R.id.nav_friends -> makeCurrentFragment(FriendsFragment())
-                R.id.nav_indicator -> makeCurrentFragment(IndicatorsFragment())
-                R.id.nav_create_indicator -> makeCurrentFragment(CreateTypeIndicatorsFragment())
+                R.id.nav_indicator -> makeCurrentFragment(HistoryFragment())
+                R.id.nav_create_indicator -> makeCurrentFragment(IndicatorsFragment())
             }
             true
         }
