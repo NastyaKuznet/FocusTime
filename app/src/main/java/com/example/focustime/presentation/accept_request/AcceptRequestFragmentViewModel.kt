@@ -1,17 +1,16 @@
-package com.example.focustime.presentation.request
+package com.example.focustime.presentation.accept_request
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.focustime.domain.usecases.GetFriendsUseCase
 import com.example.focustime.domain.usecases.GetRequestUseCase
 import com.example.focustime.presentation.models.ResultUIFriends
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RequestFragmentViewModel @Inject constructor(
+class AcceptRequestFragmentViewModel @Inject constructor(
     private val getRequestUseCase: GetRequestUseCase
 ) : ViewModel() {
 

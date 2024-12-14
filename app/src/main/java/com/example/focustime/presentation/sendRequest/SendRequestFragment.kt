@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.addFriends
+package com.example.focustime.presentation.sendRequest
 
 import android.content.Context
 import android.os.Bundle
@@ -9,20 +9,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
-import com.example.focustime.databinding.FragmentAddFriendsBinding
+import com.example.focustime.databinding.FragmentSendRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddFriendsFragment : Fragment(R.layout.fragment_add_friends) {
+class SendRequestFragment : Fragment(R.layout.fragment_send_request) {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val binding: FragmentAddFriendsBinding by viewBinding()
+    private val binding: FragmentSendRequestBinding by viewBinding()
 
-    private val viewModel: AddFriendsFragmentViewModel by viewModels { viewModelFactory }
+    private val viewModel: SendRequestFragmentViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding){

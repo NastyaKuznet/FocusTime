@@ -1,17 +1,7 @@
 package com.example.focustime.di
 
-import com.example.focustime.data.network.repositories.RemoteDatabaseRepository
-import com.example.focustime.data.network.repositories.RemoteDatabaseRepositoryImpl
-import com.example.focustime.domain.usecases.AuthorizationUserUseCase
-import com.example.focustime.domain.usecases.AuthorizationUserUseCaseImpl
-import com.example.focustime.domain.usecases.GetFriendsUseCase
-import com.example.focustime.domain.usecases.GetFriendsUseCaseImpl
-import com.example.focustime.domain.usecases.GetRequestUseCase
-import com.example.focustime.domain.usecases.GetRequestUseCaseImpl
-import com.example.focustime.domain.usecases.RegistrationUserUseCase
-import com.example.focustime.domain.usecases.RegistrationUserUseCaseImpl
-import com.example.focustime.domain.usecases.SendFriendRequestUseCase
-import com.example.focustime.domain.usecases.SendFriendRequestUseCaseImpl
+import com.example.focustime.data.network.repositories.*
+import com.example.focustime.domain.usecases.*
 import dagger.Binds
 import dagger.Module
 
@@ -27,6 +17,26 @@ interface AppBindsModule {
     @Binds
     fun bindRegistrationUserUseCase(repository: RegistrationUserUseCaseImpl): RegistrationUserUseCase
 
+    @Binds
+    fun bindUploadImageUseCase(repository: UploadImageUseCaseImpl): UploadImageUseCase
+
+    @Binds
+    fun bindAddTypeIndicatorUseCase(repository: AddTypeIndicatorUseCaseImpl): AddTypeIndicatorUseCase
+
+    @Binds
+    fun bindGetTypesIndicatorsUseCase(repository: GetTypesIndicatorsUseCaseImpl): GetTypesIndicatorsUseCase
+
+    @Binds
+    fun bindGetImagesUseCase(repository: GetImagesUseCaseImpl): GetImagesUseCase
+
+    @Binds
+    fun bindDeleteTypeIndicatorUseCase(repository: DeleteTypeIndicatorUseCaseImpl): DeleteTypeIndicatorUseCase
+
+    @Binds
+    fun bindAddIndicatorUseCase(repository: AddIndicatorUseCaseImpl): AddIndicatorUseCase
+
+    @Binds
+    fun bindAllIndicatorsUseCase(repository: GetAllIndicatorsUseCaseImpl): GetAllIndicatorsUseCase
     @Binds
     fun bindGetFriendsUseCase(repository: GetFriendsUseCaseImpl): GetFriendsUseCase
 

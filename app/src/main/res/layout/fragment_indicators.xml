@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Индикаторы за период"
+            android:text="Типы индикаторов"
             android:textSize="18sp" />
 
         <ImageView
@@ -28,17 +28,26 @@
             android:background="@color/white"/>
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/periodSpinner"
+    <TextView
+        android:id="@+id/indicatorListTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:text="Список типов индикатора"
+        android:padding="16dp"
+        android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/indicatorsList"
+        android:id="@+id/indicatorList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="16dp" />
+
+    <Button
+        android:id="@+id/createIndicatorButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Создать новый тип индикатора"
+        android:layout_margin="16dp"/>
 
 </LinearLayout>
