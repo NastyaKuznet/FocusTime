@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -13,6 +14,7 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentHistoryBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import javax.inject.Inject
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {
@@ -49,16 +51,16 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
                     val selectedText = adapter?.getItem(selectedItemPosition) ?: ""
                     when(selectedText){
                         "За день"  -> {
-                            viewModel.getIndicatorsDay()
+                            viewModel.filterIndicators(HistoryViewModel.FilterType.DAY)
                         }
                         "За месяц" -> {
-                            viewModel.getIndicatorsMonth()
+                            viewModel.filterIndicators(HistoryViewModel.FilterType.MONTH)
                         }
                         "За год" -> {
-                            viewModel.getIndicatorsYear()
+                            viewModel.filterIndicators(HistoryViewModel.FilterType.YEAR)
                         }
                         "За всё время" -> {
-                            viewModel.getIndicatorsAllTime()
+                            viewModel.filterIndicators(HistoryViewModel.FilterType.ALL)
                         }
                     }
                 }
@@ -75,10 +77,16 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
             periodSpinner.adapter = adapterSpinner
         }
         viewModel.currentIndicators.observe(viewLifecycleOwner){
-            indicatorAdapter.submitList(it)
+            when(it){
+                is UIState.Success -> {
+                    indicatorAdapter.submitList(it.value)
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
         }
-
-        viewModel.getIndicatorsDay()
     }
 
     override fun onAttach(context: Context) {

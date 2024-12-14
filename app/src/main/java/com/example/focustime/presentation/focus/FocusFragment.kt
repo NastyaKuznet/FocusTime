@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
 import com.example.focustime.databinding.FragmentFocusBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.newFocus.NewFocusFragment
 import javax.inject.Inject
 
@@ -33,12 +35,22 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
         viewModel.getTypesIndicators(userId)
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
-            if(it != null){
-                val periods = it
+            when(it) {
+                is UIState.Success -> {
+                    val periods = it.value
 
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                binding.indicatorSpinner.adapter = adapter
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        periods
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.indicatorSpinner.adapter = adapter
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
             }
         }
 
@@ -68,6 +80,15 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
         bundle.putInt("idType", viewModel.getIdTypeIndByName(
             binding.indicatorSpinner.selectedItem.toString()
         ))
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("userId", userId)
+        editor.apply()
+        bundle.putInt("userId", userId)
         val fr = NewFocusFragment()
         fr.arguments = bundle
         getParentFragmentManager()

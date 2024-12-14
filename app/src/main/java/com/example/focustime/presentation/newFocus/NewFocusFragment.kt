@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -13,6 +14,7 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentNewFocusBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -49,10 +51,13 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
 
         viewModel.stateTime.observe(viewLifecycleOwner){
             when(it){
-                true -> {
+                is UIState.Success -> {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
-                false -> {}
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
             }
         }
         with(binding){

@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.State
 import com.example.focustime.data.models.TypeIndicator
 import com.example.focustime.domain.usecases.GetTypesIndicatorsUseCase
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,8 +16,8 @@ class FocusViewModel @Inject constructor(
     private val getTypesIndicatorsUseCase: GetTypesIndicatorsUseCase,
 ): ViewModel() {
 
-    private val _listTypesIndicators = MutableLiveData<List<String>>()
-    val listTypeIndicators: LiveData<List<String>>
+    private val _listTypesIndicators = MutableLiveData<UIState<List<String>>>()
+    val listTypeIndicators: LiveData<UIState<List<String>>>
         get() = _listTypesIndicators
 
     private val _counter = MutableLiveData<Long>(0)
@@ -25,13 +28,18 @@ class FocusViewModel @Inject constructor(
 
     fun getTypesIndicators(userId: Int){
         viewModelScope.launch {
+            _listTypesIndicators.value = UIState.Loading
             val result = getTypesIndicatorsUseCase(userId)
-            typeIndicators = result
+            if(result.state == State.FAIL){
+                _listTypesIndicators.value = UIState.Fail(result.message)
+                return@launch
+            }
+            typeIndicators = result.content
             val forSpinner = mutableListOf<String>()
-            for(el in result){
+            for(el in typeIndicators){
                 forSpinner.add(el.name)
             }
-            _listTypesIndicators.value = forSpinner
+            _listTypesIndicators.value = UIState.Success(forSpinner, result.message)
         }
     }
 

@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.State
 import com.example.focustime.domain.usecases.AddIndicatorUseCase
 import com.example.focustime.domain.usecases.GetImagesUseCase
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.InputStream
@@ -25,8 +28,8 @@ class NewFocusViewModel @Inject constructor(
     val time: LiveData<Long>
         get() = _time
 
-    private val _stateTime = MutableLiveData(false)
-    val stateTime: LiveData<Boolean>
+    private val _stateTime = MutableLiveData<UIState<Unit>>()
+    val stateTime: LiveData<UIState<Unit>>
         get() = _stateTime
 
     private val _selectedImage = MutableLiveData<InputStream>()
@@ -44,7 +47,11 @@ class NewFocusViewModel @Inject constructor(
         var count = 0
         job = viewModelScope.launch {
             val result = getImagesUseCase(idType)
-            images.value = result.toMutableList()
+            if(result.state == State.FAIL){
+                Log.d("startTimer", "image not get")
+                return@launch
+            }
+            images.value = result.content.toMutableList()
 
             while (_time.value != endT) {
                 delay(1000L)
@@ -60,8 +67,8 @@ class NewFocusViewModel @Inject constructor(
             }
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val formattedDateTime = formatter.format(Date())
-            addIndicatorUseCase(userId, endT.toInt(), idType, formattedDateTime)
-            _stateTime.value = true
+            val savedState = addIndicatorUseCase(userId, endT.toInt(), idType, formattedDateTime)
+            _stateTime.value = savedState.toUIState()
         }
     }
 

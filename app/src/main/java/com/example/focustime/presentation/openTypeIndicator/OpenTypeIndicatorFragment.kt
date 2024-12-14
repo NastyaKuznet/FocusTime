@@ -16,6 +16,7 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentOpenTypeIndicatorBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.indicators.IndicatorsFragment
 import kotlinx.coroutines.launch
 import java.io.InputStream
@@ -42,9 +43,18 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         with(binding){
             nameTypeIndicatorOpen.text = nameType
             viewModel.images.observe(viewLifecycleOwner){
-                for (i in 0 until  it.size) {
-                    addPictureOnScreen(it[i], i)
+                when(it){
+                    is UIState.Success -> {
+                        for (i in 0 until  it.value.size) {
+                            addPictureOnScreen(it.value[i], i)
+                        }
+                    }
+                    is UIState.Fail -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
                 }
+
             }
             deleteTypeIndicator.setOnClickListener {
                 if(idType != null) {
@@ -52,16 +62,16 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
                     lifecycleScope.launch {
                         viewModel.stateDel.observe(viewLifecycleOwner) {
                             when (it) {
-                                DeleteState.SUCCESS -> {
-                                    Toast.makeText(requireContext(), "Удалено", Toast.LENGTH_SHORT)
+                                is UIState.Success -> {
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
                                         .show()
                                     goScreenOpenTypeIndicator()
                                 }
 
-                                DeleteState.FAIL -> {
+                                is UIState.Fail -> {
                                     Toast.makeText(
                                         requireContext(),
-                                        "Ошибка удаления",
+                                        it.message,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
