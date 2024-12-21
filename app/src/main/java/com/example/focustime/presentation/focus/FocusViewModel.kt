@@ -8,7 +8,6 @@ import com.example.focustime.data.State
 import com.example.focustime.data.models.TypeIndicator
 import com.example.focustime.domain.usecases.GetTypesIndicatorsUseCase
 import com.example.focustime.presentation.UIState
-import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,9 +19,17 @@ class FocusViewModel @Inject constructor(
     val listTypeIndicators: LiveData<UIState<List<String>>>
         get() = _listTypesIndicators
 
-    private val _counter = MutableLiveData<Long>(0)
-    val counter: LiveData<Long>
-        get() = _counter
+    private val _second = MutableLiveData<Long>(0)
+    val second: LiveData<Long>
+        get() = _second
+
+    private val _minute = MutableLiveData<Long>(0)
+    val minute: LiveData<Long>
+        get() = _minute
+
+    private val _hour = MutableLiveData<Long>(0)
+    val hour: LiveData<Long>
+        get() = _hour
 
     private var typeIndicators = listOf<TypeIndicator>()
 
@@ -54,11 +61,27 @@ class FocusViewModel @Inject constructor(
         return 0
     }
 
-    fun increment() {
-        _counter.value = counter.value?.plus(1)
+    fun incrementSecond() {
+        _second.value = second.value?.plus(1)
     }
 
-    fun decrement() {
-        _counter.value = counter.value?.minus(1)?.coerceAtLeast(0)
+    fun decrementSecond() {
+        _second.value = second.value?.minus(1)?.coerceAtLeast(0)
+    }
+
+    fun incrementMinute() {
+        _minute.value = _minute.value?.plus(1)
+    }
+
+    fun decrementMinute() {
+        _minute.value = _minute.value?.minus(1)?.coerceAtLeast(0)
+    }
+
+    fun incrementHour() {
+        _hour.value = _hour.value?.plus(1)
+    }
+
+    fun decrementHour() {
+        _hour.value = _hour.value?.minus(1)?.coerceAtLeast(0)
     }
 }

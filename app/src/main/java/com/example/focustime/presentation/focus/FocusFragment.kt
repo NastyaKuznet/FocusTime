@@ -54,19 +54,47 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             }
         }
 
-        viewModel.counter.observe(viewLifecycleOwner){
+        viewModel.hour.observe(viewLifecycleOwner){
             if(it != null)
-                binding.focusTimeInput.setText(it.toString())
+                binding.focusTimeInputHour.setText(it.toString())
+        }
+
+        viewModel.minute.observe(viewLifecycleOwner){
+            if(it != null)
+                binding.focusTimeInputMinute.setText(it.toString())
+        }
+
+        viewModel.second.observe(viewLifecycleOwner){
+            if(it != null)
+                binding.focusTimeInputSecond.setText(it.toString())
         }
 
         with(binding){
 
-            addTime.setOnClickListener {
-                viewModel.increment()
+            addTimeHour.setOnClickListener {
+                viewModel.incrementHour()
             }
-            removeTime.setOnClickListener {
-                viewModel.decrement()
+
+            removeTimeHour.setOnClickListener {
+                viewModel.decrementHour()
             }
+
+            addTimeMinute.setOnClickListener {
+                viewModel.incrementMinute()
+            }
+
+            removeTimeMinute.setOnClickListener {
+                viewModel.decrementMinute()
+            }
+
+            addTimeSecond.setOnClickListener {
+                viewModel.incrementSecond()
+            }
+
+            removeTimeSecond.setOnClickListener {
+                viewModel.decrementSecond()
+            }
+
             createIndicatorButton.setOnClickListener {
                 goScreenCreateNewTypeIndicator()
             }
@@ -76,7 +104,7 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
     private fun goScreenCreateNewTypeIndicator(){
         val bundle = Bundle()
-        bundle.putLong("time", binding.focusTimeInput.text.toString().toLongOrNull() ?: 0L)
+        bundle.putInt("time", translateToSecond())
         bundle.putInt("idType", viewModel.getIdTypeIndByName(
             binding.indicatorSpinner.selectedItem.toString()
         ))
@@ -96,6 +124,12 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             .replace(R.id.fragment_container, fr, "NEW_FOCUS_FRAGMENT_TAG")
             .addToBackStack("NEW_FOCUS_FRAGMENT_TAG")
             .commit()
+    }
+
+    fun translateToSecond(): Int{
+        return (viewModel.hour.value?.toInt() ?: 0) * 3600 +
+                (viewModel.minute.value?.toInt() ?: 0) * 60 +
+                (viewModel.second.value?.toInt() ?: 0)
     }
 
     override fun onAttach(context: Context) {

@@ -28,7 +28,7 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
     private val viewModel: NewFocusViewModel by viewModels() {viewModelFactory}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val time = arguments?.getLong("time")
+        val time = arguments?.getInt("time")
         val idType = arguments?.getInt("idType")
 
         val userId = arguments?.getInt("userId") ?: run {
@@ -86,6 +86,8 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
     private fun formatTime(seconds: Long): String {
         val minutes = TimeUnit.SECONDS.toMinutes(seconds)
         val remainingSeconds = seconds - TimeUnit.MINUTES.toSeconds(minutes)
-        return String.format("%02d:%02d", minutes, remainingSeconds)
+        val hours = TimeUnit.MINUTES.toHours(minutes)
+        val remainingMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
+        return String.format("%02d:%02d:%02d", hours, remainingMinutes, remainingSeconds)
     }
 }
