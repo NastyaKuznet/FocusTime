@@ -16,6 +16,7 @@ import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.sendRequest.SendRequestFragment
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.accept_request.AcceptRequestFragment
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,6 +65,10 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
         binding.friendRequestsButton.setOnClickListener {
             makeCurrentFragment(AcceptRequestFragment())
+        }
+
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
         }
     }
 

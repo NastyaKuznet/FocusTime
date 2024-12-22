@@ -56,4 +56,10 @@ interface RemoteDatabaseService {
 
     @PUT("/sendFriendRequest")
     suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)//L
+
+    @POST("/getUserInfo")
+    suspend fun getUserInfo(@Body requestBody: IdUserRequestBody): UserInfo//L
+
+    @PUT("/updateUserInfo")
+    suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest)//L
 }
