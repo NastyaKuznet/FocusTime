@@ -36,7 +36,7 @@
         android:id="@+id/selectIndicatorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Выбрать тип индикатора"
+        android:text="Выберите тип индикатора"
         android:padding="16dp"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/head"
@@ -54,44 +54,127 @@
         android:id="@+id/setFocusTimeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Указать время фокусировки (в минутах)"
+        android:text="Укажите время фокусировки"
         android:padding="16dp"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/indicatorSpinner"
         app:layout_constraintStart_toStartOf="parent"/>
 
 
-    <ImageView
-        android:id="@+id/addTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_add_24"
-        android:layout_marginStart="10dp"
-        app:layout_constraintTop_toTopOf="@id/focusTimeInput"
-        app:layout_constraintStart_toStartOf="@id/setFocusTimeText"
-        app:layout_constraintBottom_toBottomOf="@id/focusTimeInput"
-        app:layout_constraintEnd_toStartOf="@id/focusTimeInput"
-        />
-
-    <EditText
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/focusTimeInput"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="0"
-        android:textAlignment="center"
-        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@id/setFocusTimeText"
-        app:layout_constraintStart_toEndOf="@id/addTime"
-        app:layout_constraintEnd_toEndOf="@id/removeTime"/>
-    <ImageView
-        android:id="@+id/removeTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_remove_24"
-        app:layout_constraintTop_toTopOf="@id/focusTimeInput"
-        app:layout_constraintStart_toEndOf="@id/focusTimeInput"
-        app:layout_constraintBottom_toBottomOf="@id/focusTimeInput"
-        />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/addTime_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_add_24"
+            app:layout_constraintBottom_toTopOf="@id/focusTimeInput_hour"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_hour"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_hour"/>
+
+        <EditText
+            android:id="@+id/focusTimeInput_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="00"
+            android:textAlignment="center"
+            android:inputType="number"
+            app:layout_constraintTop_toTopOf="@id/focusTimeInput_minute"
+            app:layout_constraintEnd_toStartOf="@id/focusTimeInput_minute"
+            app:layout_constraintBottom_toBottomOf="@id/focusTimeInput_minute"/>
+
+        <ImageView
+            android:id="@+id/removeTime_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_remove_24"
+            app:layout_constraintTop_toBottomOf="@id/focusTimeInput_hour"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_hour"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_hour" />
+
+        <TextView
+            android:id="@+id/separator_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            app:layout_constraintTop_toTopOf="@id/focusTimeInput_hour"
+            app:layout_constraintBottom_toBottomOf="@id/focusTimeInput_hour"
+            app:layout_constraintStart_toEndOf="@id/focusTimeInput_hour"/>
+
+        <ImageView
+            android:id="@+id/addTime_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_add_24"
+            app:layout_constraintBottom_toTopOf="@id/focusTimeInput_minute"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_minute"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_minute" />
+
+        <EditText
+            android:id="@+id/focusTimeInput_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="00"
+            android:textAlignment="center"
+            android:inputType="number"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/removeTime_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_remove_24"
+            app:layout_constraintTop_toBottomOf="@id/focusTimeInput_minute"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_minute"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_minute" />
+
+        <TextView
+            android:id="@+id/separator_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            app:layout_constraintTop_toTopOf="@id/focusTimeInput_minute"
+            app:layout_constraintBottom_toBottomOf="@id/focusTimeInput_minute"
+            app:layout_constraintStart_toEndOf="@id/focusTimeInput_minute"/>
+
+        <ImageView
+            android:id="@+id/addTime_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_add_24"
+            app:layout_constraintBottom_toTopOf="@id/focusTimeInput_second"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_second"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_second"/>
+
+        <EditText
+            android:id="@+id/focusTimeInput_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="00"
+            android:textAlignment="center"
+            android:inputType="number"
+            app:layout_constraintTop_toTopOf="@id/focusTimeInput_minute"
+            app:layout_constraintBottom_toBottomOf="@id/focusTimeInput_minute"
+            app:layout_constraintStart_toEndOf="@id/separator_two"/>
+
+        <ImageView
+            android:id="@+id/removeTime_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_remove_24"
+            app:layout_constraintTop_toBottomOf="@id/focusTimeInput_second"
+            app:layout_constraintStart_toStartOf="@id/focusTimeInput_second"
+            app:layout_constraintEnd_toEndOf="@id/focusTimeInput_second" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/createIndicatorButton"

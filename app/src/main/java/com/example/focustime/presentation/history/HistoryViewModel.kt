@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.Indicator
 import com.example.focustime.domain.usecases.GetAllIndicatorsUseCase
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -16,11 +18,11 @@ class HistoryViewModel @Inject constructor(
     private val getAllIndicatorsUseCase: GetAllIndicatorsUseCase,
 ): ViewModel() {
 
-    private val _currentIndicators = MutableLiveData<List<Indicator>>()
-    val currentIndicators: LiveData<List<Indicator>>
+    private val _currentIndicators = MutableLiveData<UIState<List<Indicator>>>()
+    val currentIndicators: LiveData<UIState<List<Indicator>>>
         get() = _currentIndicators
 
-    private var indicators = listOf<Indicator>()
+    private var indicators: UIState<List<Indicator>> = UIState.Loading
     private var currentDate = "2024-01-01"
 
     private fun getDateNow(){
@@ -31,52 +33,55 @@ class HistoryViewModel @Inject constructor(
     fun getIndicators(userId: Int){
         getDateNow()
         viewModelScope.launch {
+            _currentIndicators.value = UIState.Loading
             val result = getAllIndicatorsUseCase(userId)
-            indicators = result
-            getIndicatorsAllTime()
-        }
-    }
+            indicators = result.toUIState()
+            when(indicators) {
+                is UIState.Success -> {
 
-    fun getIndicatorsAllTime(){
-        _currentIndicators.value = indicators
-    }
-
-    fun getIndicatorsDay(){
-        val lengthCD = currentDate.length
-        val day = currentDate.substring(lengthCD - 2, lengthCD)
-        val result = mutableListOf<Indicator>()
-        for(el in indicators){
-            val lengthID = el.day.length
-            if(el.day.substring(lengthID - 2, lengthID) == day){
-                result.add(el)
+                    _currentIndicators.value = indicators
+                }
+                is UIState.Fail -> _currentIndicators.value = indicators
+                else -> {}
             }
         }
-        _currentIndicators.value = result
     }
 
-    fun getIndicatorsMonth(){
-        val lengthCD = currentDate.length
-        val month = currentDate.substring(lengthCD - 5, lengthCD - 2)
-        val result = mutableListOf<Indicator>()
-        for(el in indicators){
-            val lengthID = el.day.length
-            if(el.day.substring(lengthID - 5, lengthID - 2) == month){
-                result.add(el)
+    fun filterIndicators(filterType: FilterType) {
+        viewModelScope.launch {
+            if (indicators is UIState.Success) {
+                val filteredIndicators = when (filterType) {
+                    FilterType.ALL -> (indicators as UIState.Success).value
+                    FilterType.DAY -> filterByDay((indicators as UIState.Success).value)
+                    FilterType.MONTH -> filterByMonth((indicators as UIState.Success).value)
+                    FilterType.YEAR -> filterByYear((indicators as UIState.Success).value)
+                }
+                _currentIndicators.value = UIState.Success(filteredIndicators, "Готово")
+            } else if (indicators is UIState.Fail) {
+                _currentIndicators.value = indicators
             }
         }
-        _currentIndicators.value = result
     }
 
-    fun getIndicatorsYear(){
+    private fun filterByDay(indicators: List<Indicator>): List<Indicator> {
+        val day = currentDate.substring(currentDate.length - 2)
+        return indicators.filter { it.day.endsWith(day) }
+    }
+
+    private fun filterByMonth(indicators: List<Indicator>): List<Indicator> {
+        val month = currentDate.substring(currentDate.length - 5, currentDate.length - 3)
+        return indicators.filter { it.day.substring(5,7) == month }
+    }
+
+    private fun filterByYear(indicators: List<Indicator>): List<Indicator> {
         val year = currentDate.substring(0, 4)
-        val result = mutableListOf<Indicator>()
-        for(el in indicators){
-            if(el.day.substring(0, 4) == year){
-                result.add(el)
-            }
-        }
-        _currentIndicators.value = result
+        return indicators.filter { it.day.startsWith(year) }
     }
 
-
+    enum class FilterType {
+        ALL,
+        DAY,
+        MONTH,
+        YEAR
+    }
 }

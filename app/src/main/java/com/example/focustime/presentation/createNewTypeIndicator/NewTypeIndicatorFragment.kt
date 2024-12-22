@@ -3,7 +3,6 @@ package com.example.focustime.presentation.createNewTypeIndicator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -21,7 +20,7 @@ import javax.inject.Inject
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.models.ResultUIState
+import com.example.focustime.presentation.UIState
 import kotlinx.coroutines.launch
 
 
@@ -55,20 +54,19 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
             save.setOnClickListener {
                 viewModel.save(requireContext(), etInputName.text.toString(), userId)
                 lifecycleScope.launch {
-                    viewModel.resultSave.observe(viewLifecycleOwner) { resultSave ->
-                        when (resultSave) {
-                            StateSave.SAVED -> {
+                    viewModel.resultSave.observe(viewLifecycleOwner) { uiState ->
+                        when (uiState) {
+                            is UIState.Success -> {
                                 Toast.makeText(requireContext(),
-                                    "Сохранено", Toast.LENGTH_LONG).show()
+                                    uiState.message, Toast.LENGTH_LONG).show()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
-                            StateSave.NOSAVED -> {
+                            is UIState.Fail -> {
                                 Toast.makeText(requireContext(),
-                                    "Не сохранено", Toast.LENGTH_LONG).show()
+                                    uiState.message, Toast.LENGTH_LONG).show()
                             }
-                            StateSave.EMPTYFIELD ->{
-                                Toast.makeText(requireContext(),
-                                    "Все поля должны быть заполнены", Toast.LENGTH_LONG).show()
+                            else -> {
+
                             }
                         }
                     }

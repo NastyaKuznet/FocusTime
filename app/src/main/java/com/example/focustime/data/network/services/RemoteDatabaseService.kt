@@ -18,32 +18,32 @@ interface RemoteDatabaseService {
     suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): User //L
 
     @POST("/registration")
-    suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): User//N
+    suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User>
 
     @POST("/add-type-indicator")
-    suspend fun addTypeIndicator(@Body requestBody: AddTypeIndicatorBody)//N
+    suspend fun addTypeIndicator(@Body requestBody: AddTypeIndicatorBody): Response<Unit>
 
     @Multipart
     @POST("/upload-image")
-    suspend fun uploadImage(@Part image: MultipartBody.Part): Int//N
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<Int>
 
     @POST("/typesindicators")
-    suspend fun getAllTypesIndicators(@Body requestBody: IdUserRequestBody): List<TypeIndicator>//N
+    suspend fun getAllTypesIndicators(@Body requestBody: IdUserRequestBody): Response<List<TypeIndicator>>
 
     @POST("/get-image-id")
-    suspend fun getImagesIds(@Body requestBody: IdTypeIndicatorRequestBody): List<IdImageResponse>//N
+    suspend fun getImagesIds(@Body requestBody: IdTypeIndicatorRequestBody): Response<List<IdImageResponse>>
 
     @POST("/image")
-    suspend fun getImage(@Body requestBody: RequestBody): Response<ResponseBody>//N
+    suspend fun getImage(@Body requestBody: RequestBody): Response<ResponseBody>
 
     @POST("/delete-type-indicator")
-    suspend fun deleteTypeIndicator(@Body requestBody: IdTypeIndicatorRequestBody)//N
+    suspend fun deleteTypeIndicator(@Body requestBody: IdTypeIndicatorRequestBody): Response<Unit>
 
     @POST("/allindicators")
-    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): List<Indicator>//N
+    suspend fun getAllIndicators(@Body requestBody: IdUserRequestBody): Response<List<Indicator>>
 
     @POST("/addindicator")
-    suspend fun addIndicator(@Body requestBody: AddIndicatorBody)//N
+    suspend fun addIndicator(@Body requestBody: AddIndicatorBody): Response<Unit>
 
     @POST("/allfriend")
     suspend fun getFriends(@Body requestBody: GetFriendsRequest): List<Friend>//L

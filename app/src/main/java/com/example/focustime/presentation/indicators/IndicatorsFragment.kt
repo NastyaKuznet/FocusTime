@@ -3,6 +3,7 @@ package com.example.focustime.presentation.indicators
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.example.focustime.data.models.TypeIndicator
 import com.example.focustime.databinding.FragmentIndicatorsBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorFragment
 import javax.inject.Inject
@@ -44,7 +46,16 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
         }
 
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
-            adapter.submitList(it)
+            when(it){
+                is UIState.Success -> {
+                    adapter.submitList(it.value)
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+
         }
 
         super.onViewCreated(view, savedInstanceState)

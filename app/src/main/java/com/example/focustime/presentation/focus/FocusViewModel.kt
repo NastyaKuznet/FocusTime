@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.State
 import com.example.focustime.data.models.TypeIndicator
 import com.example.focustime.domain.usecases.GetTypesIndicatorsUseCase
+import com.example.focustime.presentation.UIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,25 +15,38 @@ class FocusViewModel @Inject constructor(
     private val getTypesIndicatorsUseCase: GetTypesIndicatorsUseCase,
 ): ViewModel() {
 
-    private val _listTypesIndicators = MutableLiveData<List<String>>()
-    val listTypeIndicators: LiveData<List<String>>
+    private val _listTypesIndicators = MutableLiveData<UIState<List<String>>>()
+    val listTypeIndicators: LiveData<UIState<List<String>>>
         get() = _listTypesIndicators
 
-    private val _counter = MutableLiveData<Long>(0)
-    val counter: LiveData<Long>
-        get() = _counter
+    private val _second = MutableLiveData<Long>(0)
+    val second: LiveData<Long>
+        get() = _second
+
+    private val _minute = MutableLiveData<Long>(0)
+    val minute: LiveData<Long>
+        get() = _minute
+
+    private val _hour = MutableLiveData<Long>(0)
+    val hour: LiveData<Long>
+        get() = _hour
 
     private var typeIndicators = listOf<TypeIndicator>()
 
     fun getTypesIndicators(userId: Int){
         viewModelScope.launch {
+            _listTypesIndicators.value = UIState.Loading
             val result = getTypesIndicatorsUseCase(userId)
-            typeIndicators = result
+            if(result.state == State.FAIL){
+                _listTypesIndicators.value = UIState.Fail(result.message)
+                return@launch
+            }
+            typeIndicators = result.content
             val forSpinner = mutableListOf<String>()
-            for(el in result){
+            for(el in typeIndicators){
                 forSpinner.add(el.name)
             }
-            _listTypesIndicators.value = forSpinner
+            _listTypesIndicators.value = UIState.Success(forSpinner, result.message)
         }
     }
 
@@ -46,11 +61,27 @@ class FocusViewModel @Inject constructor(
         return 0
     }
 
-    fun increment() {
-        _counter.value = counter.value?.plus(1)
+    fun incrementSecond() {
+        _second.value = second.value?.plus(1)
     }
 
-    fun decrement() {
-        _counter.value = counter.value?.minus(1)?.coerceAtLeast(0)
+    fun decrementSecond() {
+        _second.value = second.value?.minus(1)?.coerceAtLeast(0)
+    }
+
+    fun incrementMinute() {
+        _minute.value = _minute.value?.plus(1)
+    }
+
+    fun decrementMinute() {
+        _minute.value = _minute.value?.minus(1)?.coerceAtLeast(0)
+    }
+
+    fun incrementHour() {
+        _hour.value = _hour.value?.plus(1)
+    }
+
+    fun decrementHour() {
+        _hour.value = _hour.value?.minus(1)?.coerceAtLeast(0)
     }
 }

@@ -1,6 +1,8 @@
 package com.example.focustime.data.network.repositories
 
 import android.util.Log
+import com.example.focustime.data.State
+import com.example.focustime.data.StateResponse
 import com.example.focustime.data.models.*
 import com.example.focustime.data.network.entities.ResultFriends
 import com.example.focustime.data.network.entities.ResultSendFriendRequest
@@ -11,6 +13,7 @@ import com.example.focustime.data.network.entities.request.GetFriendsRequest
 import com.example.focustime.data.network.entities.request.SendFriendRequest
 import com.example.focustime.data.network.entities.request.UserAuthAndRegistrationRequest
 import com.example.focustime.data.network.services.RemoteDatabaseService
+import com.example.focustime.presentation.UIState
 import com.google.gson.Gson
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -22,16 +25,16 @@ import javax.inject.Inject
 
 interface RemoteDatabaseRepository {
 
-    suspend fun registrationUser(nickname: String, password: String): ResultUser
+    suspend fun registrationUser(nickname: String, password: String): StateResponse<User>
     suspend fun authorizationUser(nickname: String, password: String): ResultUser
-    suspend fun addTypeIndicator(id: Int, typeName: String, images: List<Int>): Boolean
-    suspend fun uploadImage(file: File): Int
-    suspend fun getAllTypeIndicators(idUser: Int): List<TypeIndicator>
-    suspend fun getImagesIds(idType: Int): List<Int>
-    suspend fun getImage(idImage: Int): InputStream?
-    suspend fun deleteTypeIndicator(idType: Int): Boolean
-    suspend fun addIndicator(userId: Int, interval: Int, type: Int, date: String): Boolean
-    suspend fun getAllIndicators(userId: Int): List<Indicator>
+    suspend fun addTypeIndicator(id: Int, typeName: String, images: List<Int>): StateResponse<Unit>
+    suspend fun uploadImage(file: File): StateResponse<Int>
+    suspend fun getAllTypeIndicators(idUser: Int): StateResponse<List<TypeIndicator>>
+    suspend fun getImagesIds(idType: Int): StateResponse<List<Int>>
+    suspend fun getImage(idImage: Int): StateResponse<InputStream?>
+    suspend fun deleteTypeIndicator(idType: Int): StateResponse<Unit>
+    suspend fun addIndicator(userId: Int, interval: Int, type: Int, date: String): StateResponse<Unit>
+    suspend fun getAllIndicators(userId: Int): StateResponse<List<Indicator>>
     suspend fun getFriends(userId: Int): ResultFriends
     suspend fun getRequest(userId: Int): ResultFriends
     suspend fun addFriend():Unit
@@ -44,15 +47,31 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
     private val service: RemoteDatabaseService,
 ): RemoteDatabaseRepository {
 
-    override suspend fun registrationUser(nickname: String, password: String): ResultUser {
+    override suspend fun registrationUser(nickname: String, password: String): StateResponse<User> {
         try {
-            val user = service.registrationUser(UserAuthAndRegistrationRequest(nickname, password))
-            return ResultUser(user, true)
-        } catch (e: HttpException){
-            if (e.code() == 404){
-                return ResultUser(User(0,"","",""), false)
+            val result = service.registrationUser(UserAuthAndRegistrationRequest(nickname, password))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Регистрация пройдена успешно",
+                    result.body()!!)
+            } else if(result.code() == 404) {
+                StateResponse(State.FAIL,
+                    "Пользователь с таким логином уже есть",
+                    User(0,"","",""))
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает",
+                    User(0,"","",""))
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}",
+                    User(0,"","",""))
             }
-            throw e
+        } catch (e: HttpException){
+            return StateResponse(State.FAIL,
+                "Ошибка: $e",
+                User(0,"","",""))
         }
     }
 
@@ -72,54 +91,99 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         id: Int,
         typeName: String,
         images: List<Int>
-    ): Boolean {
+    ): StateResponse<Unit> {
         try {
-            service.addTypeIndicator(AddTypeIndicatorBody(id, typeName, images))
-            return true
+            val result = service.addTypeIndicator(AddTypeIndicatorBody(id, typeName, images))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Сохранено",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
+            }
         } catch (e: Exception) {
-            return false
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
         }
     }
 
-    override suspend fun uploadImage(file: File): Int {
+    override suspend fun uploadImage(file: File): StateResponse<Int> {
         try {
             val requestBody =
                 RequestBody.create(MediaType.parse("image/*"), file)
             val multipartBody =
                 MultipartBody.Part.createFormData("image", file.name, requestBody)
 
-            return service.uploadImage(multipartBody)
-        } catch (e: HttpException) {
-            if (e.code() == 500) {
-                return -1
+            val result = service.uploadImage(multipartBody)
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Сохранено",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", -1)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", -1)
             }
-            throw e
         } catch (e: Exception) {
-            throw e
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", -1)
         }
     }
 
-    override suspend fun getAllTypeIndicators(idUser: Int): List<TypeIndicator> {
+    override suspend fun getAllTypeIndicators(idUser: Int): StateResponse<List<TypeIndicator>> {
         try {
-            return service.getAllTypesIndicators(IdUserRequestBody(idUser))
+            val result = service.getAllTypesIndicators(IdUserRequestBody(idUser))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Типы индикаторов получены",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", listOf())
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", listOf())
+            }
         } catch (e: Exception) {
-            return listOf()
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", listOf())
         }
     }
 
-    override suspend fun getImagesIds(idType: Int): List<Int> {
+    override suspend fun getImagesIds(idType: Int): StateResponse<List<Int>> {
         try {
             val result = service.getImagesIds(IdTypeIndicatorRequestBody(idType))
-            val list = mutableListOf<Int>()
-            for( el in result)
-                list.add(el.idimage)
-            return list
+
+            return if(result.isSuccessful && result.body() != null){
+                val list = mutableListOf<Int>()
+                for( el in result.body()!!)
+                    list.add(el.idimage)
+                StateResponse(
+                    State.SUCCESS,
+                    "Типы индикаторов получены", list)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", listOf())
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", listOf())
+            }
         } catch (e: Exception) {
-            return listOf()
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", listOf())
         }
     }
 
-    override suspend fun getImage(idImage: Int): InputStream? {
+    override suspend fun getImage(idImage: Int): StateResponse<InputStream?> {
         try {
             val imageRequest = IdImageRequestBody(idImage)
             val gson = Gson()
@@ -131,26 +195,44 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
                 val responseBody = response.body()
                 if (responseBody != null) {
                     val inputStream = responseBody.byteStream()
-                    return inputStream
+                    return StateResponse(
+                        State.SUCCESS,
+                        "Типы индикаторов получены", inputStream)
                 } else {
-                    Log.e("ImageLoad", "Response body is null")
+                    return StateResponse(State.FAIL,
+                        "Изображение не загружено", null)
                 }
+            } else if(response.code() == 500) {
+                return StateResponse(State.FAIL,
+                    "Сервер не работает", null)
             } else {
-                Log.e("ImageLoad", "Unsuccessful response code: ${response.code()}")
+                return StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${response.code()}", null)
             }
         } catch (e: Exception) {
-            throw e
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", null)
         }
-        return null
     }
 
-    override suspend fun deleteTypeIndicator(idType: Int): Boolean {
+    override suspend fun deleteTypeIndicator(idType: Int): StateResponse<Unit> {
         try {
-            service.deleteTypeIndicator(IdTypeIndicatorRequestBody(idType))
-            return true
+            val result = service.deleteTypeIndicator(IdTypeIndicatorRequestBody(idType))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Удалено",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
+            }
         } catch (e: Exception) {
-            throw e
-            return false
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
         }
     }
 
@@ -159,21 +241,46 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         interval: Int,
         type: Int,
         date: String
-    ): Boolean {
+    ): StateResponse<Unit> {
         try {
-            service.addIndicator(AddIndicatorBody(userId, interval, type, date))
-            return true
+            val result = service.addIndicator(AddIndicatorBody(userId, interval, type, date))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Идикатор сохранен",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
+            }
         } catch (e: Exception) {
-            throw e
-            return false
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
         }
     }
 
-    override suspend fun getAllIndicators(userId: Int): List<Indicator> {
+    override suspend fun getAllIndicators(userId: Int): StateResponse<List<Indicator>> {
         try {
-            return service.getAllIndicators(IdUserRequestBody(userId))
-        } catch (e: Exception){
-            throw e
+            val result = service.getAllIndicators(IdUserRequestBody(userId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Удалено",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", listOf())
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", listOf())
+            }
+        } catch (e: Exception) {
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", listOf()
+            )
         }
     }
 

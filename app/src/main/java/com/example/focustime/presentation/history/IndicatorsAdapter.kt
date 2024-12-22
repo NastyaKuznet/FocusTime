@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.focustime.data.models.Indicator
 import com.example.focustime.databinding.ItemIndicatorBinding
+import java.util.concurrent.TimeUnit
 
 class IndicatorsAdapter(
 
@@ -29,9 +30,17 @@ class IndicatorsAdapter(
 
         fun bind(indicator: Indicator){
             with(binding){
-                interval.text = indicator.interval.toString()
+                interval.text = formatTime(indicator.interval.toLong())
                 date.text = indicator.day
             }
+        }
+
+        private fun formatTime(seconds: Long): String {
+            val minutes = TimeUnit.SECONDS.toMinutes(seconds)
+            val remainingSeconds = seconds - TimeUnit.MINUTES.toSeconds(minutes)
+            val hours = TimeUnit.MINUTES.toHours(minutes)
+            val remainingMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
+            return String.format("%02d:%02d:%02d", hours, remainingMinutes, remainingSeconds)
         }
     }
 
