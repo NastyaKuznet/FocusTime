@@ -227,7 +227,7 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun getUserInfo(userId: Int):UserInfo{
         try {
-            val request = service.getUserInfo(userId.toString())
+            val request = service.getUserInfo(IdUserRequestBody(userId))
             return request
         } catch (e: HttpException){
             if (e.code() == 404){
