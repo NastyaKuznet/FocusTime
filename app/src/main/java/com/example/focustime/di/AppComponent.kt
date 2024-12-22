@@ -11,6 +11,8 @@ import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorFra
 import com.example.focustime.presentation.friends.FriendsFragment
 import com.example.focustime.presentation.registration.RegistrationFragment
 import com.example.focustime.presentation.accept_request.AcceptRequestFragment
+import com.example.focustime.presentation.accountUser.AccountUserEditFragment
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 
 import dagger.Component
 
@@ -34,4 +36,6 @@ interface AppComponent {
     fun inject(fragment: FriendsFragment)
     fun inject(fragment: AcceptRequestFragment)
     fun inject(fragment: SendRequestFragment)
+    fun inject(fragment: AccountUserFragment)
+    fun inject(fragment: AccountUserEditFragment)
 }

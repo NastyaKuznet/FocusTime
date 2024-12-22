@@ -45,4 +45,10 @@ interface AppBindsModule {
 
     @Binds
     fun bindSendFriendRequestUseCase(repository: SendFriendRequestUseCaseImpl): SendFriendRequestUseCase
+
+    @Binds
+    fun getUserInfoUseCase(repository: getUserInfoUseCaseImpl): getUserInfoUseCase
+
+    @Binds
+    fun updateUserInfoUseCase(repository: UpdateUserInfoUseCaseImpl): UpdateUserInfoUseCase
 }

@@ -36,6 +36,8 @@ interface RemoteDatabaseRepository {
     suspend fun getRequest(userId: Int): ResultFriends
     suspend fun addFriend():Unit
     suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): ResultSendFriendRequest
+    suspend fun getUserInfo(userId: Int):UserInfo
+    suspend fun updateUserInfo(status: String, userId: Int): ResultSendFriendRequest
 }
 
 class RemoteDatabaseRepositoryImpl @Inject constructor(
@@ -217,6 +219,30 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
                 return ResultSendFriendRequest(false)
             }
             if (e.code() == 404) {
+                return ResultSendFriendRequest(false)
+            }
+            throw e
+        }
+    }
+
+    override suspend fun getUserInfo(userId: Int):UserInfo{
+        try {
+            val request = service.getUserInfo(IdUserRequestBody(userId))
+            return request
+        } catch (e: HttpException){
+            if (e.code() == 404){
+                return UserInfo("","",0,0)
+            }
+            throw e
+        }
+    }
+
+    override suspend fun updateUserInfo(status: String, userId: Int): ResultSendFriendRequest {
+        try {
+            service.updateUserInfo(UpdateUserInfoRequest(status, userId))
+            return ResultSendFriendRequest(true)
+        } catch (e: HttpException) {
+            if (e.code() == 500) {
                 return ResultSendFriendRequest(false)
             }
             throw e
