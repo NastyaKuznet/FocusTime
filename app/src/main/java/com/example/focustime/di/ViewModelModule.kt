@@ -13,6 +13,8 @@ import com.example.focustime.presentation.newFocus.NewFocusViewModel
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorViewModel
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
 import com.example.focustime.presentation.accept_request.AcceptRequestFragmentViewModel
+import com.example.focustime.presentation.accountUser.AccountUserEditFragmentViewModel
+import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -77,4 +79,14 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HistoryViewModel::class)
     abstract fun bindIndicatorsViewModel(viewModel: HistoryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AccountUserFragmentViewModel::class)
+    abstract fun AccountUserFragmentViewModel(viewModel: AccountUserFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AccountUserEditFragmentViewModel::class)
+    abstract fun AccountUserEditFragmentViewModel(viewModel: AccountUserEditFragmentViewModel): ViewModel
 }

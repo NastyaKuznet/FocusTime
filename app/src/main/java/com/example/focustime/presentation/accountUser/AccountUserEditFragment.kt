@@ -1,22 +1,72 @@
 package com.example.focustime.presentation.accountUser
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
+import com.example.focustime.databinding.FragmentAccountUserBinding
+import com.example.focustime.databinding.FragmentAccountUserEditBinding
+import com.example.focustime.di.ViewModelFactory
+import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.models.ResultUIState
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AccountUserEditFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val binding: FragmentAccountUserEditBinding by viewBinding()
+
+    private val viewModel: AccountUserEditFragmentViewModel by viewModels() { viewModelFactory }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences =
+                requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+
+
+        with(binding) {
+            saveButton.setOnClickListener {
+                viewModel.updateUserInfo(
+                    userId,
+                    editUserStatus.text.toString()
+                )
+
+
+                lifecycleScope.launch {
+                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+                        when (uiState.success) {
+                            ResultUIState.Success -> {
+                                Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
+                            }
+
+                            ResultUIState.Error -> {
+                                Toast.makeText(requireContext(), "error", Toast.LENGTH_LONG).show()
+                            }
+
+                            else -> {}
+                        }
+                    }
+                }
+            }
+
+        }
+
+        super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account_user_edit, container, false)
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
     }
 }
