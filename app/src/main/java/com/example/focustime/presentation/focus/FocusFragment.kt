@@ -96,7 +96,13 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             }
 
             createIndicatorButton.setOnClickListener {
-                goScreenCreateNewTypeIndicator()
+                if(indicatorSpinner.selectedItem == null){
+                    Toast.makeText(requireContext(),
+                        "Нужно выбрать индикатор.",
+                        Toast.LENGTH_SHORT).show()
+                } else {
+                    goScreenCreateNewTypeIndicator()
+                }
             }
         }
 

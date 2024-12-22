@@ -6,19 +6,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/text_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Длительность: "
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
         android:id="@+id/interval"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="interval"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/text_interval"
+        app:layout_constraintTop_toTopOf="@id/text_interval"/>
+
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Дата: "
+        app:layout_constraintTop_toBottomOf="@id/text_interval"
+        app:layout_constraintStart_toStartOf="@id/text_interval"/>
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="date"
-        app:layout_constraintTop_toBottomOf="@id/interval"
-        app:layout_constraintStart_toStartOf="@id/interval"/>
+        app:layout_constraintTop_toTopOf="@id/text_date"
+        app:layout_constraintStart_toEndOf="@id/text_date"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
