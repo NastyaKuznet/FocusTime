@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import android.content.Context
 import com.example.focustime.domain.usecases.*
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -20,11 +22,9 @@ class NewTypeIndicatorViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _selectedImages = MutableLiveData<List<Uri?>>()
-    val selectedImages: LiveData<List<Uri?>>
-        get() = _selectedImages
 
-    private val _resultSave = MutableLiveData<StateSave>()
-    val resultSave: LiveData<StateSave>
+    private val _resultSave = MutableLiveData<UIState<Unit>>()
+    val resultSave: LiveData<UIState<Unit>>
         get() = _resultSave
 
     fun setImages(list: List<Uri>){
@@ -33,19 +33,20 @@ class NewTypeIndicatorViewModel @Inject constructor(
 
     fun save(context: Context, typeName: String, userId: Int){
         val listId = mutableListOf<Int>()
-        if(typeName.isEmpty() || selectedImages.value == null){
-            _resultSave.value = StateSave.EMPTYFIELD
+        if(typeName.isEmpty() || _selectedImages.value == null){
+            _resultSave.value = UIState.Fail("Все поля должны быть заполнены")
             return
         }
         viewModelScope.launch {
-            for(el in selectedImages.value!!) {
+            for(el in _selectedImages.value!!) {
                 val tempFile = createTempFileFromUri(el!!, context)
                 tempFile?.let { file ->
-                    listId.add(uploadImageUseCase(file))
+                    val result = uploadImageUseCase(file)
+                    listId.add(result.content)
                 }
             }
             val result = addTypeIndicatorUseCase(userId, typeName, listId)
-            _resultSave.value = if (result) StateSave.SAVED else StateSave.NOSAVED
+            _resultSave.value = result.toUIState()
         }
     }
 

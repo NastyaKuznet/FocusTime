@@ -13,10 +13,9 @@ import javax.inject.Inject
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.focustime.di.appComponent
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
-import com.example.focustime.presentation.models.ResultUIState
+import com.example.focustime.presentation.UIState
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
@@ -36,21 +35,18 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
                 lifecycleScope.launch {
                     viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                        when (uiState.resultUIState) {
-                            ResultUIState.Success -> {
-                                Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
+                        when (uiState) {
+                            is UIState.Success -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                                 val bundle = Bundle()
-                                bundle.putInt("userId", uiState.user.id)
-                                saveUserIdToPreferences(requireContext(), uiState.user.id)
+                                bundle.putInt("userId", uiState.value.id)
+                                saveUserIdToPreferences(requireContext(), uiState.value.id)
                                 findNavController().navigate(
                                     R.id.rootFragment,
                                     bundle)
                             }
-                            ResultUIState.Error -> {
-                                Toast.makeText(requireContext(), "Соблюдайте условия!", Toast.LENGTH_LONG).show()
-                            }
-                            ResultUIState.AlreadyExists -> {
-                                Toast.makeText(requireContext(), "Имя занято", Toast.LENGTH_LONG).show()
+                            is UIState.Fail -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                             }
                             else -> {}
                         }
@@ -62,7 +58,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             }
 
         }
-
 
         super.onViewCreated(view, savedInstanceState)
     }

@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
 import com.example.focustime.databinding.FragmentFocusBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.newFocus.NewFocusFragment
 import javax.inject.Inject
 
@@ -33,30 +35,74 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
         viewModel.getTypesIndicators(userId)
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
-            if(it != null){
-                val periods = it
+            when(it) {
+                is UIState.Success -> {
+                    val periods = it.value
 
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                binding.indicatorSpinner.adapter = adapter
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        periods
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.indicatorSpinner.adapter = adapter
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
             }
         }
 
-        viewModel.counter.observe(viewLifecycleOwner){
+        viewModel.hour.observe(viewLifecycleOwner){
             if(it != null)
-                binding.focusTimeInput.setText(it.toString())
+                binding.focusTimeInputHour.setText(it.toString())
+        }
+
+        viewModel.minute.observe(viewLifecycleOwner){
+            if(it != null)
+                binding.focusTimeInputMinute.setText(it.toString())
+        }
+
+        viewModel.second.observe(viewLifecycleOwner){
+            if(it != null)
+                binding.focusTimeInputSecond.setText(it.toString())
         }
 
         with(binding){
 
-            addTime.setOnClickListener {
-                viewModel.increment()
+            addTimeHour.setOnClickListener {
+                viewModel.incrementHour()
             }
-            removeTime.setOnClickListener {
-                viewModel.decrement()
+
+            removeTimeHour.setOnClickListener {
+                viewModel.decrementHour()
             }
+
+            addTimeMinute.setOnClickListener {
+                viewModel.incrementMinute()
+            }
+
+            removeTimeMinute.setOnClickListener {
+                viewModel.decrementMinute()
+            }
+
+            addTimeSecond.setOnClickListener {
+                viewModel.incrementSecond()
+            }
+
+            removeTimeSecond.setOnClickListener {
+                viewModel.decrementSecond()
+            }
+
             createIndicatorButton.setOnClickListener {
-                goScreenCreateNewTypeIndicator()
+                if(indicatorSpinner.selectedItem == null){
+                    Toast.makeText(requireContext(),
+                        "Нужно выбрать индикатор.",
+                        Toast.LENGTH_SHORT).show()
+                } else {
+                    goScreenCreateNewTypeIndicator()
+                }
             }
         }
 
@@ -64,10 +110,19 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
     private fun goScreenCreateNewTypeIndicator(){
         val bundle = Bundle()
-        bundle.putLong("time", binding.focusTimeInput.text.toString().toLongOrNull() ?: 0L)
+        bundle.putInt("time", translateToSecond())
         bundle.putInt("idType", viewModel.getIdTypeIndByName(
             binding.indicatorSpinner.selectedItem.toString()
         ))
+        val userId = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("userId", userId)
+        editor.apply()
+        bundle.putInt("userId", userId)
         val fr = NewFocusFragment()
         fr.arguments = bundle
         getParentFragmentManager()
@@ -75,6 +130,12 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             .replace(R.id.fragment_container, fr, "NEW_FOCUS_FRAGMENT_TAG")
             .addToBackStack("NEW_FOCUS_FRAGMENT_TAG")
             .commit()
+    }
+
+    fun translateToSecond(): Int{
+        return (viewModel.hour.value?.toInt() ?: 0) * 3600 +
+                (viewModel.minute.value?.toInt() ?: 0) * 60 +
+                (viewModel.second.value?.toInt() ?: 0)
     }
 
     override fun onAttach(context: Context) {
