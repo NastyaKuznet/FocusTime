@@ -100,6 +100,11 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
                     Toast.makeText(requireContext(),
                         "Нужно выбрать индикатор.",
                         Toast.LENGTH_SHORT).show()
+
+                } else if(translateToSecond() == 0) {
+                    Toast.makeText(requireContext(),
+                        "Укажите время",
+                        Toast.LENGTH_SHORT).show()
                 } else {
                     goScreenCreateNewTypeIndicator()
                 }

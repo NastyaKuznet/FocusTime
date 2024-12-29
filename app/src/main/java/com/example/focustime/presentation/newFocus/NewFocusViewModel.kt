@@ -41,8 +41,15 @@ class NewFocusViewModel @Inject constructor(
 
 
     fun startTimer(endTime: Int, idType: Int, userId: Int) {
-        val step = endTime / 5 //константа стадий
+        var endT = 0
+        if(endTime < 5) {
+            endT = 5
+        } else{
+            endT = endTime
+        }
+        val step = endT / 5 //константа стадий
         var count = 0
+
         job = viewModelScope.launch {
             val result = getImagesUseCase(idType)
             if(result.state == State.FAIL){

@@ -90,4 +90,9 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
         val remainingMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
         return String.format("%02d:%02d:%02d", hours, remainingMinutes, remainingSeconds)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.pauseTimer()
+    }
 }

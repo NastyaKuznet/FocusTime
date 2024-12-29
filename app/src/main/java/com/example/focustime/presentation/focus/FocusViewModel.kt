@@ -62,19 +62,23 @@ class FocusViewModel @Inject constructor(
     }
 
     fun incrementSecond() {
-        _second.value = second.value?.plus(1)
+        _second.value = (_second.value ?: 0).inc().rem(60)
     }
 
     fun decrementSecond() {
-        _second.value = second.value?.minus(1)?.coerceAtLeast(0)
+        _second.value = (_second.value ?: 0).minus(1).let {
+            if(it < 0) 59 else it
+        }
     }
 
     fun incrementMinute() {
-        _minute.value = _minute.value?.plus(1)
+        _minute.value = (_minute.value ?: 0).inc().rem(60)
     }
 
     fun decrementMinute() {
-        _minute.value = _minute.value?.minus(1)?.coerceAtLeast(0)
+        _minute.value = (_minute.value ?: 0).minus(1).let {
+            if(it < 0) 59 else it
+        }
     }
 
     fun incrementHour() {
@@ -82,6 +86,8 @@ class FocusViewModel @Inject constructor(
     }
 
     fun decrementHour() {
-        _hour.value = _hour.value?.minus(1)?.coerceAtLeast(0)
+        _hour.value = (_hour.value ?: 0).minus(1).let {
+            if(it < 0) 23 else it
+        }
     }
 }
