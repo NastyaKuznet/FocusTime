@@ -48,12 +48,31 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
             when(it){
                 is UIState.Success -> {
+                    with(binding){
+                        indicatorListTitle.visibility = View.VISIBLE
+                        indicatorList.visibility = View.VISIBLE
+                        createIndicatorButton.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                    }
                     adapter.submitList(it.value)
                 }
                 is UIState.Fail -> {
+                    with(binding){
+                        indicatorListTitle.visibility = View.VISIBLE
+                        indicatorList.visibility = View.VISIBLE
+                        createIndicatorButton.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                    }
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
-                else -> {}
+                is UIState.Loading -> {
+                    with(binding){
+                        indicatorListTitle.visibility = View.GONE
+                        indicatorList.visibility = View.GONE
+                        createIndicatorButton.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                    }
+                }
             }
 
         }

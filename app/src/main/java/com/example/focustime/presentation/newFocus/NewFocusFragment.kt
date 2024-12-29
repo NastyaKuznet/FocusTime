@@ -49,6 +49,23 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
             binding.containerImageState.setImageBitmap(bitmap)
         }
 
+        viewModel.stateLoadingImages.observe(viewLifecycleOwner){
+            when(it){
+                is UIState.Success -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                }
+                is UIState.Fail -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                }
+                is UIState.Loading -> {
+                    binding.content.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+                }
+            }
+        }
+
         viewModel.stateTime.observe(viewLifecycleOwner){
             when(it){
                 is UIState.Success -> {
@@ -57,7 +74,10 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
                 is UIState.Fail -> {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
-                else -> {}
+                is UIState.Loading -> {
+                    binding.content.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+                }
             }
         }
         with(binding){

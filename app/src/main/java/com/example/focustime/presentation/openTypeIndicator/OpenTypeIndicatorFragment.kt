@@ -45,14 +45,21 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
             viewModel.images.observe(viewLifecycleOwner){
                 when(it){
                     is UIState.Success -> {
+                        binding.content.visibility = View.VISIBLE
+                        binding.loading.visibility = View.GONE
                         for (i in 0 until  it.value.size) {
                             addPictureOnScreen(it.value[i], i)
                         }
                     }
                     is UIState.Fail -> {
+                        binding.content.visibility = View.VISIBLE
+                        binding.loading.visibility = View.GONE
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
-                    else -> {}
+                    is UIState.Loading -> {
+                        binding.content.visibility = View.GONE
+                        binding.loading.visibility = View.VISIBLE
+                    }
                 }
 
             }
@@ -69,13 +76,18 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
                                 }
 
                                 is UIState.Fail -> {
+                                    binding.content.visibility = View.VISIBLE
+                                    binding.loading.visibility = View.GONE
                                     Toast.makeText(
                                         requireContext(),
                                         it.message,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
-                                else ->{}
+                                is UIState.Loading -> {
+                                    binding.content.visibility = View.GONE
+                                    binding.loading.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }

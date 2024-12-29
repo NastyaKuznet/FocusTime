@@ -62,11 +62,14 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                             is UIState.Fail -> {
+                                binding.content.visibility = View.VISIBLE
+                                binding.loading.visibility = View.GONE
                                 Toast.makeText(requireContext(),
                                     uiState.message, Toast.LENGTH_LONG).show()
                             }
-                            else -> {
-
+                            is UIState.Loading -> {
+                                binding.content.visibility = View.GONE
+                                binding.loading.visibility = View.VISIBLE
                             }
                         }
                     }

@@ -38,6 +38,7 @@ class NewTypeIndicatorViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
+            _resultSave.value = UIState.Loading
             for(el in _selectedImages.value!!) {
                 val tempFile = createTempFileFromUri(el!!, context)
                 tempFile?.let { file ->

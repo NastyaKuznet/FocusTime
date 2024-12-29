@@ -79,12 +79,19 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         viewModel.currentIndicators.observe(viewLifecycleOwner){
             when(it){
                 is UIState.Success -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
                     indicatorAdapter.submitList(it.value)
                 }
                 is UIState.Fail -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
-                else -> {}
+                is UIState.Loading -> {
+                    binding.content.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+                }
             }
         }
     }
