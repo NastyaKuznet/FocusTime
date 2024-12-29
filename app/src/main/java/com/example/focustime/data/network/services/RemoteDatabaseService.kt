@@ -52,7 +52,7 @@ interface RemoteDatabaseService {
     @POST("/request")
     suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>//L
 
-    @POST("/addFriend")
+    @PUT("/addFriend")
     suspend fun acceptRequest(@Body requestBody: AddFriendsRequest): Response<Unit>//L
 
     @PUT("/sendFriendRequest")
