@@ -41,7 +41,7 @@ interface AppBindsModule {
     fun bindGetFriendsUseCase(repository: GetFriendsUseCaseImpl): GetFriendsUseCase
 
     @Binds
-    fun bindGetRequestUseCase(repository: GetRequestUseCaseImpl): GetRequestUseCase
+    fun bindGetRequestUseCase(repository: AcceptRequestUseCaseImpl): AcceptRequestUseCase
 
     @Binds
     fun bindSendFriendRequestUseCase(repository: SendFriendRequestUseCaseImpl): SendFriendRequestUseCase
@@ -51,4 +51,10 @@ interface AppBindsModule {
 
     @Binds
     fun updateUserInfoUseCase(repository: UpdateUserInfoUseCaseImpl): UpdateUserInfoUseCase
+
+    @Binds
+    fun getRequestUseCaseImpl(repository: GetRequestUseCaseImpl): GetRequestUseCase
+
+    @Binds
+    fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
 }
