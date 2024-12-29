@@ -1,5 +1,6 @@
 package com.example.focustime.di
 
+import android.app.Application
 import com.example.focustime.presentation.sendRequest.SendRequestFragment
 import com.example.focustime.presentation.authorization.AuthorizationFragment
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
@@ -13,6 +14,7 @@ import com.example.focustime.presentation.registration.RegistrationFragment
 import com.example.focustime.presentation.accept_request.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserEditFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
+import dagger.BindsInstance
 
 import dagger.Component
 
@@ -38,4 +40,11 @@ interface AppComponent {
     fun inject(fragment: SendRequestFragment)
     fun inject(fragment: AccountUserFragment)
     fun inject(fragment: AccountUserEditFragment)
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(app: Application): Builder
+        fun build(): AppComponent
+    }
 }

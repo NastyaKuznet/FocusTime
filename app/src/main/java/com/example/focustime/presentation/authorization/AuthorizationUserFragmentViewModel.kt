@@ -12,12 +12,14 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.User
 import com.example.focustime.data.network.entities.ResultUser
+import com.example.focustime.domain.usecases.SaveUserIdInLocaleUseCase
 import com.example.focustime.domain.usecases.UserValidation
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.models.ResultUIUser
 
 class AuthorizationUserFragmentViewModel @Inject constructor(
     private val authorizationUserUseCase: AuthorizationUserUseCase,
+    private val saveUserIdInLocaleUseCase: SaveUserIdInLocaleUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableLiveData<ResultUIUser>()
@@ -42,6 +44,7 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
                     true -> ResultUIState.Success
                     false -> ResultUIState.Error
                 })
+            saveUserIdInLocaleUseCase(result.user.id)
         }
     }
 
