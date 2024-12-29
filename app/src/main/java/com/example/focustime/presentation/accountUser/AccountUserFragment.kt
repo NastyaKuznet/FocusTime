@@ -14,6 +14,7 @@ import com.example.focustime.databinding.FragmentAccountUserBinding
 import com.example.focustime.databinding.FragmentRegistrationBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.avatar.AvatarFragment
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
 import kotlinx.coroutines.launch
@@ -59,6 +60,10 @@ class AccountUserFragment : Fragment(R.layout.fragment_account_user) {
 
         binding.registerButton.setOnClickListener{
             makeCurrentFragment(AccountUserEditFragment())
+        }
+
+        binding.changeAvatarButton.setOnClickListener{
+            makeCurrentFragment(AvatarFragment())
         }
 
         super.onViewCreated(view, savedInstanceState)

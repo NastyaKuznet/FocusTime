@@ -1,5 +1,6 @@
 package com.example.focustime.data.network.services
 
+import com.example.focustime.data.StateResponse
 import com.example.focustime.data.models.*
 import com.example.focustime.data.network.entities.request.*
 import com.example.focustime.presentation.friends.Friend
@@ -51,8 +52,8 @@ interface RemoteDatabaseService {
     @POST("/request")
     suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>//L
 
-    @POST("/addFriend")
-    suspend fun addFriend(@Body requestBody: AddFriendsRequest)//L
+    @PUT("/addFriend")
+    suspend fun acceptRequest(@Body requestBody: AddFriendsRequest): Response<Unit>//L
 
     @PUT("/sendFriendRequest")
     suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)//L
@@ -62,4 +63,7 @@ interface RemoteDatabaseService {
 
     @PUT("/updateUserInfo")
     suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest)//L
+
+    @PUT("/updateAvatar")
+    suspend fun updateAvatar(@Body requestBody: UpdateAvatarRequestBody): Response<Unit>//L
 }
