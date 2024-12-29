@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.UserInfo
 import com.example.focustime.domain.usecases.SendFriendRequestUseCase
+import com.example.focustime.domain.usecases.UpdateAvatarUseCase
 import com.example.focustime.domain.usecases.getUserInfoUseCase
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.models.ResultUI
 import com.example.focustime.presentation.models.ResultUIFriends
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.models.ResultUIUserInfo
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
