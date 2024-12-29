@@ -27,16 +27,43 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
     private val viewModel: RegistrationUserFragmentViewModel by viewModels() {viewModelFactory}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        viewModel.checkLocaleUserId()
+
         with(binding){
+
+            viewModel.stateCheckUserId.observe(viewLifecycleOwner){
+                when(it){
+                    is UIState.Success -> {
+                        val bundle = Bundle()
+                        bundle.putInt("userId", it.value.idUser)
+                        saveUserIdToPreferences(requireContext(), it.value.idUser)
+                        findNavController().navigate(
+                            R.id.rootFragment,
+                            bundle)
+                    }
+                    is UIState.Fail -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                    }
+                    is UIState.Loading -> {
+                        content.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                    }
+                }
+
+            }
+
             buttonRegister.setOnClickListener {
                 viewModel.registration(
                     editTextUsername.text.toString(),
                     editTextPasswordRegister.text.toString())
 
                 lifecycleScope.launch {
-                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+                    viewModel.stateRegistration.observe(viewLifecycleOwner) { uiState ->
                         when (uiState) {
                             is UIState.Success -> {
+
                                 Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                                 val bundle = Bundle()
                                 bundle.putInt("userId", uiState.value.id)
@@ -46,9 +73,14 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                                     bundle)
                             }
                             is UIState.Fail -> {
+                                content.visibility = View.VISIBLE
+                                loading.visibility = View.GONE
                                 Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                             }
-                            else -> {}
+                            is UIState.Loading -> {
+                                content.visibility = View.GONE
+                                loading.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }

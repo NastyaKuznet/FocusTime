@@ -1,9 +1,17 @@
 package com.example.focustime.di
 
+import android.app.Application
+import android.content.Context
+import androidx.room.Room
+import com.example.focustime.data.database.LocalDatabase
+import com.example.focustime.data.database.dao.UserInfoDAO
+import com.example.focustime.data.database.repository.*
 import com.example.focustime.data.network.repositories.*
 import com.example.focustime.domain.usecases.*
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 interface AppBindsModule {
@@ -41,7 +49,7 @@ interface AppBindsModule {
     fun bindGetFriendsUseCase(repository: GetFriendsUseCaseImpl): GetFriendsUseCase
 
     @Binds
-    fun bindGetRequestUseCase(repository: AcceptRequestUseCaseImpl): AcceptRequestUseCase
+    fun bindGetRequestUseCase(repository: GetRequestUseCaseImpl): GetRequestUseCase
 
     @Binds
     fun bindSendFriendRequestUseCase(repository: SendFriendRequestUseCaseImpl): SendFriendRequestUseCase
@@ -53,8 +61,40 @@ interface AppBindsModule {
     fun updateUserInfoUseCase(repository: UpdateUserInfoUseCaseImpl): UpdateUserInfoUseCase
 
     @Binds
-    fun getRequestUseCaseImpl(repository: GetRequestUseCaseImpl): GetRequestUseCase
+    fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
 
     @Binds
-    fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
+    fun bindSaveUserIdInLocaleUseCase(repository: SaveUserIdInLocaleUseCaseImpl): SaveUserIdInLocaleUseCase
+
+    @Binds
+    fun bindGetUserIdLocaleUseCase(repository: GetUserIdLocaleUseCaseImpl): GetUserIdLocaleUseCase
+
+    @Binds
+    fun bindDeleteUserIdLocaleUseCase(useCase: DeleteUserIdLocaleUseCaseImpl): DeleteUserIdLocaleUseCase
+
+    @Binds
+    fun bindAcceptRequestUseCase(repository: AcceptRequestUseCaseImpl): AcceptRequestUseCase
+
+    @Binds
+    //@Singleton
+    fun bindLocalDatabaseRepository(repository: LocalDatabaseRepositoryImpl): LocalDatabaseRepository
+
+    companion object {
+
+        @Provides
+        fun provideContext(app: Application): Context = app.applicationContext
+
+        @Provides
+        //@Singleton
+        fun provideLocalDataBase(context: Context): LocalDatabase =
+            Room.databaseBuilder(
+                context,
+                LocalDatabase::class.java,
+                "local.db"
+            ).build()
+
+        @Provides
+        //@Singleton
+        fun provideUserInfoDAO(db: LocalDatabase): UserInfoDAO = db.userInfoDao
+    }
 }

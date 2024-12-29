@@ -269,7 +269,7 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
             return if(result.isSuccessful && result.body() != null){
                 StateResponse(
                     State.SUCCESS,
-                    "Удалено",
+                    "Список индикаторов получен",
                     result.body()!!)
             } else if(result.code() == 500) {
                 StateResponse(State.FAIL,

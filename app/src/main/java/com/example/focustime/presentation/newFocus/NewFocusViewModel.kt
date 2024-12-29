@@ -36,15 +36,28 @@ class NewFocusViewModel @Inject constructor(
     val selectedImage: LiveData<InputStream>
         get() = _selectedImage
 
+    private val _stateLoadingImages = MutableLiveData<UIState<List<InputStream>>>()
+    val stateLoadingImages: LiveData<UIState<List<InputStream>>>
+        get() = _stateLoadingImages
+
     private var job: Job? = null
     private var images = MutableLiveData<MutableList<InputStream>>()
 
 
     fun startTimer(endTime: Int, idType: Int, userId: Int) {
-        val step = endTime / 5 //константа стадий
+        var endT = 0
+        if(endTime < 5) {
+            endT = 5
+        } else{
+            endT = endTime
+        }
+        val step = endT / 5 //константа стадий
         var count = 0
+
         job = viewModelScope.launch {
+            _stateLoadingImages.value = UIState.Loading
             val result = getImagesUseCase(idType)
+            _stateLoadingImages.value = result.toUIState()
             if(result.state == State.FAIL){
                 Log.d("startTimer", "image not get")
                 return@launch

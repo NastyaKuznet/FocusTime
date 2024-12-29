@@ -37,6 +37,8 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
             when(it) {
                 is UIState.Success -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
                     val periods = it.value
 
                     val adapter = ArrayAdapter(
@@ -48,9 +50,14 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
                     binding.indicatorSpinner.adapter = adapter
                 }
                 is UIState.Fail -> {
+                    binding.content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
-                else -> {}
+                is UIState.Loading -> {
+                    binding.content.visibility = View.GONE
+                    binding.loading.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -99,6 +106,11 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
                 if(indicatorSpinner.selectedItem == null){
                     Toast.makeText(requireContext(),
                         "Нужно выбрать индикатор.",
+                        Toast.LENGTH_SHORT).show()
+
+                } else if(translateToSecond() == 0) {
+                    Toast.makeText(requireContext(),
+                        "Укажите время",
                         Toast.LENGTH_SHORT).show()
                 } else {
                     goScreenCreateNewTypeIndicator()
