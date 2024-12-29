@@ -37,7 +37,8 @@ interface RemoteDatabaseRepository {
     suspend fun getAllIndicators(userId: Int): StateResponse<List<Indicator>>
     suspend fun getFriends(userId: Int): ResultFriends
     suspend fun getRequest(userId: Int): ResultFriends
-    suspend fun addFriend():Unit
+    suspend fun acceptRequest(userId1: Int, userId2: Int):StateResponse<Unit>
+    suspend fun updateAvatar(userId: Int, newAvatarId: Int):StateResponse<Unit>
     suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): ResultSendFriendRequest
     suspend fun getUserInfo(userId: Int):UserInfo
     suspend fun updateUserInfo(status: String, userId: Int): ResultSendFriendRequest
@@ -310,8 +311,46 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addFriend(){
+    override suspend fun acceptRequest(userId1: Int, userId2: Int):StateResponse<Unit>{
+        try {
+            val result = service.acceptRequest(AddFriendsRequest(userId1, userId2))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Заявка принята",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
+            }
+        } catch (e: Exception) {
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
+        }
+    }
 
+    override suspend fun updateAvatar(userId: Int, newAvatarId: Int):StateResponse<Unit>{
+        try {
+            val result = service.updateAvatar(UpdateAvatarRequestBody(userId, newAvatarId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Аватарка сохранена",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
+            }
+        } catch (e: Exception) {
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
+        }
     }
 
     override suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): ResultSendFriendRequest {

@@ -61,6 +61,12 @@ interface AppBindsModule {
     fun updateUserInfoUseCase(repository: UpdateUserInfoUseCaseImpl): UpdateUserInfoUseCase
 
     @Binds
+    fun getRequestUseCaseImpl(repository: GetRequestUseCaseImpl): GetRequestUseCase
+
+    @Binds
+    fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
+
+    @Binds
     fun bindSaveUserIdInLocaleUseCase(repository: SaveUserIdInLocaleUseCaseImpl): SaveUserIdInLocaleUseCase
 
     @Binds

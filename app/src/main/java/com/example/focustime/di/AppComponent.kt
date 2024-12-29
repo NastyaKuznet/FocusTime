@@ -11,10 +11,10 @@ import com.example.focustime.presentation.newFocus.NewFocusFragment
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorFragment
 import com.example.focustime.presentation.friends.FriendsFragment
 import com.example.focustime.presentation.registration.RegistrationFragment
-import com.example.focustime.presentation.accept_request.AcceptRequestFragment
+import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserEditFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
-import dagger.BindsInstance
+import com.example.focustime.presentation.avatar.AvatarFragment
 
 import dagger.Component
 
@@ -40,6 +40,7 @@ interface AppComponent {
     fun inject(fragment: SendRequestFragment)
     fun inject(fragment: AccountUserFragment)
     fun inject(fragment: AccountUserEditFragment)
+    fun inject(fragment: AvatarFragment)
 
     @Component.Builder
     interface Builder {

@@ -1,4 +1,4 @@
-package com.example.focustime.presentation.accept_request
+package com.example.focustime.presentation.acceptRequest
 
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +13,8 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentAcceptRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
-import com.example.focustime.presentation.friends.FriendsAdapter
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.friends.Friend
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,13 +30,12 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val friendsAdapter = FriendsAdapter(emptyList())
-        friendsAdapter.GetfriendOrRequest(1)
+        val friendsAdapter = RequestAdapter(emptyList(),::onAddFriendClicked)
         binding.requestList.adapter = friendsAdapter
         binding.requestList.layoutManager = LinearLayoutManager(context)
 
         lifecycleScope.launch {
-            viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            viewModel.uiStateRequest.observe(viewLifecycleOwner) { uiState ->
                 when (uiState.stateResult) {
                     ResultUIState.Success -> {
                         friendsAdapter.updateFriends(uiState.friends)
@@ -63,5 +63,39 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
+    }
+
+    private fun onAddFriendClicked(friend: Friend): Boolean{
+        var result = false
+
+        val userId1 = friend.user_id
+
+        val userId2 = arguments?.getInt("userId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("userId", 0)
+        }
+
+        viewModel.acceptRequest(userId1, userId2)
+        lifecycleScope.launch {
+            viewModel.uiState.observe(viewLifecycleOwner) {
+                when (it) {
+                    is UIState.Success -> {
+                        result = true
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    is UIState.Fail -> {
+                        Toast.makeText(
+                            requireContext(),
+                            it.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    else ->{}
+                }
+            }
+        }
+
+        return result
     }
 }
