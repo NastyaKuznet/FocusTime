@@ -61,9 +61,6 @@ interface AppBindsModule {
     fun updateUserInfoUseCase(repository: UpdateUserInfoUseCaseImpl): UpdateUserInfoUseCase
 
     @Binds
-    fun getRequestUseCaseImpl(repository: GetRequestUseCaseImpl): GetRequestUseCase
-
-    @Binds
     fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
 
     @Binds
@@ -74,6 +71,9 @@ interface AppBindsModule {
 
     @Binds
     fun bindDeleteUserIdLocaleUseCase(useCase: DeleteUserIdLocaleUseCaseImpl): DeleteUserIdLocaleUseCase
+
+    @Binds
+    fun bindAcceptRequestUseCase(repository: AcceptRequestUseCaseImpl): AcceptRequestUseCase
 
     @Binds
     //@Singleton

@@ -15,6 +15,7 @@ import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserEditFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.avatar.AvatarFragment
+import dagger.BindsInstance
 
 import dagger.Component
 
