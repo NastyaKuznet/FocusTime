@@ -17,6 +17,7 @@ import com.example.focustime.databinding.FragmentOpenTypeIndicatorBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.indicators.IndicatorsFragment
 import kotlinx.coroutines.launch
 import java.io.InputStream
@@ -96,6 +97,16 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         }
 
 
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onAttach(context: Context) {

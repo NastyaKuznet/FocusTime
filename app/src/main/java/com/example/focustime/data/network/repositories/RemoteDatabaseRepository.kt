@@ -14,11 +14,13 @@ import com.example.focustime.data.network.entities.request.SendFriendRequest
 import com.example.focustime.data.network.entities.request.UserAuthAndRegistrationRequest
 import com.example.focustime.data.network.services.RemoteDatabaseService
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.friends.Friend
 import com.google.gson.Gson
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
@@ -26,7 +28,7 @@ import javax.inject.Inject
 interface RemoteDatabaseRepository {
 
     suspend fun registrationUser(nickname: String, password: String): StateResponse<User>
-    suspend fun authorizationUser(nickname: String, password: String): ResultUser
+    suspend fun authorizationUser(nickname: String, password: String): StateResponse<User>
     suspend fun addTypeIndicator(id: Int, typeName: String, images: List<Int>): StateResponse<Unit>
     suspend fun uploadImage(file: File): StateResponse<Int>
     suspend fun getAllTypeIndicators(idUser: Int): StateResponse<List<TypeIndicator>>
@@ -35,13 +37,13 @@ interface RemoteDatabaseRepository {
     suspend fun deleteTypeIndicator(idType: Int): StateResponse<Unit>
     suspend fun addIndicator(userId: Int, interval: Int, type: Int, date: String): StateResponse<Unit>
     suspend fun getAllIndicators(userId: Int): StateResponse<List<Indicator>>
-    suspend fun getFriends(userId: Int): ResultFriends
-    suspend fun getRequest(userId: Int): ResultFriends
+    suspend fun getFriends(userId: Int): StateResponse<List<Friend>>
+    suspend fun getRequest(userId: Int): StateResponse<List<Friend>>
     suspend fun acceptRequest(userId1: Int, userId2: Int):StateResponse<Unit>
     suspend fun updateAvatar(userId: Int, newAvatarId: Int):StateResponse<Unit>
-    suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): ResultSendFriendRequest
-    suspend fun getUserInfo(userId: Int):UserInfo
-    suspend fun updateUserInfo(status: String, userId: Int): ResultSendFriendRequest
+    suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): StateResponse<Unit>
+    suspend fun getUserInfo(userId: Int): StateResponse<UserInfo>
+    suspend fun updateUserInfo(status: String, userId: Int): StateResponse<Unit>
 }
 
 class RemoteDatabaseRepositoryImpl @Inject constructor(
@@ -76,15 +78,31 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun authorizationUser(nickname: String, password: String): ResultUser {
+    override suspend fun authorizationUser(nickname: String, password: String): StateResponse<User> {
         try {
-            val user = service.authorizationUser(UserAuthAndRegistrationRequest(nickname, password))
-            return ResultUser(user, true)
-        } catch (e: HttpException){
-            if (e.code() == 404){
-                return ResultUser(User(0,"","",""), false)
+            val result = service.authorizationUser(UserAuthAndRegistrationRequest(nickname, password))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Авторизация пройдена успешно",
+                    result.body()!!)
+            } else if(result.code() == 404) {
+                StateResponse(State.FAIL,
+                    "Такого пользователя нет",
+                    User(0,"","",""))
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает",
+                    User(0,"","",""))
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}",
+                    User(0,"","",""))
             }
-            throw e
+        } catch (e: HttpException){
+            return StateResponse(State.FAIL,
+                "Ошибка: $e",
+                User(0,"","",""))
         }
     }
 
@@ -287,27 +305,51 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
 
 
 
-    override suspend fun getFriends(userId: Int): ResultFriends {
+    override suspend fun getFriends(userId: Int): StateResponse<List<Friend>> {
         try {
-            val friends = service.getFriends(GetFriendsRequest(userId))
-            return ResultFriends(friends, true)
-        } catch (e: HttpException){
-            if (e.code() == 404){
-                return ResultFriends(emptyList(), false)
+            val result = service.getFriends(GetFriendsRequest(userId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Друзья отображены",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сорвер не работает",
+                    emptyList())
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}",
+                    emptyList())
             }
-            throw e
+        } catch (e: HttpException){
+            return StateResponse(State.FAIL,
+                "Ошибка: $e",
+                emptyList())
         }
     }
 
-    override suspend fun getRequest(userId: Int): ResultFriends {
+    override suspend fun getRequest(userId: Int): StateResponse<List<Friend>> {
         try {
-            val request = service.getRequest(GetFriendsRequest(userId))
-            return ResultFriends(request, true)
-        } catch (e: HttpException){
-            if (e.code() == 404){
-                return ResultFriends(emptyList(), false)
+            val result = service.getRequest(GetFriendsRequest(userId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Заявки отображены",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сорвер не работает",
+                    emptyList())
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}",
+                    emptyList())
             }
-            throw e
+        } catch (e: HttpException){
+            return StateResponse(State.FAIL,
+                "Ошибка: $e",
+                emptyList())
         }
     }
 
@@ -353,45 +395,79 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): ResultSendFriendRequest {
+    override suspend fun sendFriendRequest(user1Id: Int, user2Nickname: String): StateResponse<Unit> {
         try {
-            service.sendFriendRequest(SendFriendRequest(user1Id, user2Nickname))
-            return ResultSendFriendRequest(true)
-        } catch (e: HttpException) {
-            if (e.code() == 500) {
-                return ResultSendFriendRequest(false)
+            val result = service.sendFriendRequest(SendFriendRequest(user1Id, user2Nickname))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Заявка отправлена",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else if(result.code() == 409) {
+                StateResponse(State.FAIL,
+                    "Заявка уже была отправлена", Unit)
+            } else if(result.code() == 404) {
+                StateResponse(State.FAIL,
+                    "Такого пользователя нет", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
             }
-            if (e.code() == 409) {
-                return ResultSendFriendRequest(false)
-            }
-            if (e.code() == 404) {
-                return ResultSendFriendRequest(false)
-            }
-            throw e
+        } catch (e: Exception) {
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
         }
     }
 
-    override suspend fun getUserInfo(userId: Int):UserInfo{
+    override suspend fun getUserInfo(userId: Int): StateResponse<UserInfo>{
         try {
-            val request = service.getUserInfo(IdUserRequestBody(userId))
-            return request
+            val result = service.getUserInfo(IdUserRequestBody(userId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Аккаунт отображен",
+                    result.body()!!)
+            } else if(result.code() == 404) {
+                StateResponse(State.FAIL,
+                    "Такого пользователя нет",
+                    UserInfo("","",0,0))
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает",
+                    UserInfo("","",0,0))
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}",
+                    UserInfo("","",0,0))
+            }
         } catch (e: HttpException){
-            if (e.code() == 404){
-                return UserInfo("","",0,0)
-            }
-            throw e
+            return StateResponse(State.FAIL,
+                "Ошибка: $e",
+                UserInfo("","",0,0))
         }
     }
 
-    override suspend fun updateUserInfo(status: String, userId: Int): ResultSendFriendRequest {
+    override suspend fun updateUserInfo(status: String, userId: Int): StateResponse<Unit> {
         try {
-            service.updateUserInfo(UpdateUserInfoRequest(status, userId))
-            return ResultSendFriendRequest(true)
-        } catch (e: HttpException) {
-            if (e.code() == 500) {
-                return ResultSendFriendRequest(false)
+            val result = service.updateUserInfo(UpdateUserInfoRequest(status, userId))
+            return if(result.isSuccessful && result.body() != null){
+                StateResponse(
+                    State.SUCCESS,
+                    "Статус сохранен",
+                    result.body()!!)
+            } else if(result.code() == 500) {
+                StateResponse(State.FAIL,
+                    "Сервер не работает", Unit)
+            } else {
+                StateResponse(State.FAIL,
+                    "Сервер ответил кодом: ${result.code()}", Unit)
             }
-            throw e
+        } catch (e: Exception) {
+            return StateResponse(State.FAIL,
+                "Ошибка: $e", Unit)
         }
     }
 }

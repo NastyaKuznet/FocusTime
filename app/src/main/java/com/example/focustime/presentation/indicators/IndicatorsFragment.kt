@@ -14,6 +14,7 @@ import com.example.focustime.databinding.FragmentIndicatorsBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorFragment
 import javax.inject.Inject
@@ -78,6 +79,17 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
         }
 
         super.onViewCreated(view, savedInstanceState)
+        
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onAttach(context: Context) {

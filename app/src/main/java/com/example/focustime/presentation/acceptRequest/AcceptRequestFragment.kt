@@ -14,6 +14,7 @@ import com.example.focustime.databinding.FragmentAcceptRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.friends.Friend
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
@@ -30,23 +31,35 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val friendsAdapter = RequestAdapter(emptyList(),::onAddFriendClicked)
+
+        val friendsAdapter = RequestAdapter(emptyList(),::onAddFriendClicked,::accountFriend)
         binding.requestList.adapter = friendsAdapter
         binding.requestList.layoutManager = LinearLayoutManager(context)
 
         lifecycleScope.launch {
             viewModel.uiStateRequest.observe(viewLifecycleOwner) { uiState ->
-                when (uiState.stateResult) {
-                    ResultUIState.Success -> {
-                        friendsAdapter.updateFriends(uiState.friends)
+                when (uiState) {
+                    is UIState.Success -> {
+                        with(binding){
+                            requestList.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
+                        }
+                        friendsAdapter.updateFriends(uiState.value)
+                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
-
-                    ResultUIState.Error -> {
-                        Toast.makeText(requireContext(), "error", Toast.LENGTH_LONG)
-                            .show()
+                    is UIState.Fail -> {
+                        with(binding){
+                            requestList.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
+                        }
+                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
-
-                    else -> {}
+                    is UIState.Loading -> {
+                        with(binding){
+                            requestList.visibility = View.GONE
+                            loading.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }
@@ -57,12 +70,31 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
         }
         viewModel.loadFriends(userId)
 
-        //friendsAdapter.showTwoFriends()
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
+    }
+
+    private fun accountFriend(userIdFriend: Int){
+        val fragment = AccountUserFragment().apply {
+            arguments = Bundle().apply {
+                putInt("friendId", userIdFriend)
+            }
+        }
+
+        makeCurrentFragment(fragment)
     }
 
     private fun onAddFriendClicked(friend: Friend): Boolean{

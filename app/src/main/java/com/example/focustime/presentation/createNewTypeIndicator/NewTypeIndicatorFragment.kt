@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import kotlinx.coroutines.launch
 
 
@@ -77,6 +78,17 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
             }
         }
         super.onViewCreated(view, savedInstanceState)
+        
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

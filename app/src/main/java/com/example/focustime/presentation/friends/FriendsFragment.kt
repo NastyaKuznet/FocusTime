@@ -7,12 +7,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
 import com.example.focustime.databinding.FragmentFriendsBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.sendRequest.SendRequestFragment
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
@@ -31,24 +33,35 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val friendsAdapter = FriendsAdapter(emptyList())
+        val friendsAdapter = FriendsAdapter(emptyList(),::accountFriend)
         friendsAdapter.GetfriendOrRequest(0)
         binding.friendsList.adapter = friendsAdapter
         binding.friendsList.layoutManager = LinearLayoutManager(context)
 
         lifecycleScope.launch {
             viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                when (uiState.stateResult) {
-                    ResultUIState.Success -> {
-                        friendsAdapter.updateFriends(uiState.friends)
+                when (uiState) {
+                    is UIState.Success -> {
+                        with(binding){
+                            friendsList.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
+                        }
+                        friendsAdapter.updateFriends(uiState.value)
+                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
-
-                    ResultUIState.Error -> {
-                        Toast.makeText(requireContext(), "error", Toast.LENGTH_LONG)
-                            .show()
+                    is UIState.Fail -> {
+                        with(binding){
+                            friendsList.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
+                        }
+                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
-
-                    else -> {}
+                    is UIState.Loading -> {
+                        with(binding){
+                            friendsList.visibility = View.GONE
+                            loading.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }
@@ -72,15 +85,25 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         }
     }
 
-    override fun onAttach(context: Context) {
-        context.appComponent.inject(this)
-        super.onAttach(context)
-    }
-
     private fun makeCurrentFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    private fun accountFriend(userIdFriend: Int){
+        val fragment = AccountUserFragment().apply {
+            arguments = Bundle().apply {
+                putInt("friendId", userIdFriend)
+            }
+        }
+
+        makeCurrentFragment(fragment)
+    }
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
     }
 }

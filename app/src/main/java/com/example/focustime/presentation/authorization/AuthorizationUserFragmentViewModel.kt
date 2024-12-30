@@ -4,26 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.focustime.domain.usecases.AuthorizationUserUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.State
 import com.example.focustime.data.models.User
-import com.example.focustime.data.network.entities.ResultUser
 import com.example.focustime.domain.usecases.SaveUserIdInLocaleUseCase
-import com.example.focustime.domain.usecases.UserValidation
-import com.example.focustime.presentation.models.ResultUIState
-import com.example.focustime.presentation.models.ResultUIUser
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.toUIState
 
 class AuthorizationUserFragmentViewModel @Inject constructor(
     private val authorizationUserUseCase: AuthorizationUserUseCase,
     private val saveUserIdInLocaleUseCase: SaveUserIdInLocaleUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableLiveData<ResultUIUser>()
-    val uiState: LiveData<ResultUIUser>
+    private val _uiState = MutableLiveData<UIState<User>>()
+    val uiState: LiveData<UIState<User>>
         get() = _uiState
 
     fun authorization(nickname: String, password: String){
@@ -34,17 +30,13 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
             return
         }*/
 
-        _uiState.value = ResultUIUser(
-            User(0,"","",""),
-            ResultUIState.Loading)
+        _uiState.value = UIState.Loading
         viewModelScope.launch {
             val result = authorizationUserUseCase.invoke(nickname, password)
-            _uiState.value = ResultUIUser(result.user,
-                when(result.stateResult){
-                    true -> ResultUIState.Success
-                    false -> ResultUIState.Error
-                })
-            saveUserIdInLocaleUseCase(result.user.id)
+            _uiState.value = result.toUIState()
+            if(result.state == State.SUCCESS){
+                saveUserIdInLocaleUseCase(result.content.id)
+            }
         }
     }
 

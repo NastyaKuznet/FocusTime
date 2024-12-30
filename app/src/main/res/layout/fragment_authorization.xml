@@ -1,49 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".presentation.authorization.AuthorizationFragment">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Авторизация"
+            android:layout_marginTop="150dp"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:paddingBottom="24dp"/>
+
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Имя пользователя"
+            android:padding="16dp"/>
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Пароль"
+            android:padding="16dp"
+            android:inputType="textPassword"/>
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Войти"/>
+
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Нет аккаунта? Зарегистрироваться"
+            android:layout_gravity="center"
+            android:paddingTop="16dp"
+            android:padding="16dp"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Авторизация"
-        android:layout_marginTop="150dp"
-        android:textSize="24sp"
-        android:layout_gravity="center"
-        android:paddingBottom="24dp"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <EditText
-        android:id="@+id/editTextUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Имя пользователя"
-        android:padding="16dp"/>
-
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Пароль"
-        android:padding="16dp"
-        android:inputType="textPassword"/>
-
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Войти"/>
-
-    <TextView
-        android:id="@+id/textViewLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Нет аккаунта? Зарегистрироваться"
-        android:layout_gravity="center"
-        android:paddingTop="16dp"
-        android:padding="16dp"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

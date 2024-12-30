@@ -16,7 +16,7 @@ interface RemoteDatabaseService {
     //Response
 
     @POST("/authorization")
-    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): User //L
+    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User> //L
 
     @POST("/registration")
     suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User>
@@ -47,22 +47,22 @@ interface RemoteDatabaseService {
     suspend fun addIndicator(@Body requestBody: AddIndicatorBody): Response<Unit>
 
     @POST("/allfriend")
-    suspend fun getFriends(@Body requestBody: GetFriendsRequest): List<Friend>//L
+    suspend fun getFriends(@Body requestBody: GetFriendsRequest): Response<List<Friend>>//L
 
     @POST("/request")
-    suspend fun getRequest(@Body requestBody: GetFriendsRequest): List<Friend>//L
+    suspend fun getRequest(@Body requestBody: GetFriendsRequest): Response<List<Friend>>//L
 
     @PUT("/addFriend")
     suspend fun acceptRequest(@Body requestBody: AddFriendsRequest): Response<Unit>//L
 
     @PUT("/sendFriendRequest")
-    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest)//L
+    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest): Response<Unit>//L
 
     @POST("/getUserInfo")
-    suspend fun getUserInfo(@Body requestBody: IdUserRequestBody): UserInfo//L
+    suspend fun getUserInfo(@Body requestBody: IdUserRequestBody): Response<UserInfo>//L
 
     @PUT("/updateUserInfo")
-    suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest)//L
+    suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest): Response<Unit>//L
 
     @PUT("/updateAvatar")
     suspend fun updateAvatar(@Body requestBody: UpdateAvatarRequestBody): Response<Unit>//L

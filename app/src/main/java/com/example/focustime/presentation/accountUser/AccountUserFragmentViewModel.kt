@@ -4,43 +4,46 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.focustime.data.database.model.UserInfoEntity
 import com.example.focustime.data.models.UserInfo
-import com.example.focustime.domain.usecases.SendFriendRequestUseCase
-import com.example.focustime.domain.usecases.UpdateAvatarUseCase
+import com.example.focustime.domain.usecases.DeleteUserIdLocaleUseCase
 import com.example.focustime.domain.usecases.getUserInfoUseCase
 import com.example.focustime.presentation.UIState
-import com.example.focustime.presentation.models.ResultUI
-import com.example.focustime.presentation.models.ResultUIFriends
-import com.example.focustime.presentation.models.ResultUIState
-import com.example.focustime.presentation.models.ResultUIUserInfo
 import com.example.focustime.presentation.toUIState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AccountUserFragmentViewModel @Inject constructor(
+    private val deleteUserIdLocaleUseCase: DeleteUserIdLocaleUseCase,
     private val sendFriendRequestUseCase: getUserInfoUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableLiveData<ResultUIUserInfo>()
-    val uiState: LiveData<ResultUIUserInfo>
+    private val _uiState = MutableLiveData<UIState<UserInfo>>()
+    val uiState: LiveData<UIState<UserInfo>>
         get() = _uiState
 
-    fun getUserInfo(user1Id: Int) {
-        if (user1Id == 0) {
-            _uiState.value = ResultUIUserInfo(
-                UserInfo("","",0,0),
-                ResultUIState.Error
-            )
-            return
-        }
+    private val _stateCheckUserId = MutableLiveData<UIState<Unit>>()
+    val stateCheckUserId : LiveData<UIState<Unit>>
+        get() = _stateCheckUserId
 
-        _uiState.value = ResultUIUserInfo(
-            UserInfo("","",0,0),
-            ResultUIState.Loading
-        )
+
+    fun getUserInfo(userId: Int) {
+        _uiState.value = UIState.Loading
         viewModelScope.launch {
-            val result = sendFriendRequestUseCase.invoke(user1Id)
-            _uiState.value = ResultUIUserInfo(result,ResultUIState.Success)
+            val result = sendFriendRequestUseCase.invoke(userId)
+            _uiState.value = result.toUIState()
+        }
+    }
+
+    fun deleteUserIdLocale(userId: Int){
+        viewModelScope.launch {
+            _stateCheckUserId.value = UIState.Loading
+            val result = withContext(Dispatchers.IO) {
+                deleteUserIdLocaleUseCase(userId)
+            }
+            _stateCheckUserId.value = result.toUIState()
         }
     }
 }

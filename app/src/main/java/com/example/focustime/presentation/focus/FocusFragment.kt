@@ -13,6 +13,7 @@ import com.example.focustime.databinding.FragmentFocusBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.newFocus.NewFocusFragment
 import javax.inject.Inject
 
@@ -118,6 +119,16 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             }
         }
 
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun goScreenCreateNewTypeIndicator(){

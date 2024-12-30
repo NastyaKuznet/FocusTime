@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.presentation.models.ResultUI
 import com.example.focustime.domain.usecases.SendFriendRequestUseCase
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.models.ResultUIState
+import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,29 +16,15 @@ class SendRequestFragmentViewModel  @Inject constructor(
     private val sendFriendRequestUseCase: SendFriendRequestUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableLiveData<ResultUI>()
-    val uiState: LiveData<ResultUI>
+    private val _uiState = MutableLiveData<UIState<Unit>>()
+    val uiState: LiveData<UIState<Unit>>
         get() = _uiState
 
-    fun sendFriendRequest(user1Id: Int, user2Nickname: String) {
-        if (user1Id == 0 || user2Nickname == "") {
-            _uiState.value = ResultUI(
-                ResultUIState.Error
-            )
-            return
-        }
-
-        _uiState.value = ResultUI(
-            ResultUIState.Loading
-        )
+    fun sendFriendRequest(user1Id: Int, user2Nickname: String){
         viewModelScope.launch {
+            _uiState.value = UIState.Loading
             val result = sendFriendRequestUseCase.invoke(user1Id, user2Nickname)
-            _uiState.value = ResultUI(
-                when (result.success) {
-                    true -> ResultUIState.Success
-                    false -> ResultUIState.Error
-                }
-            )
+            _uiState.value = result.toUIState()
         }
     }
 }
