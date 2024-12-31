@@ -13,10 +13,8 @@ import retrofit2.http.*
 
 interface RemoteDatabaseService {
 
-    //Response
-
     @POST("/authorization")
-    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User> //L
+    suspend fun authorizationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User>
 
     @POST("/registration")
     suspend fun registrationUser(@Body requestBody: UserAuthAndRegistrationRequest): Response<User>
@@ -47,23 +45,23 @@ interface RemoteDatabaseService {
     suspend fun addIndicator(@Body requestBody: AddIndicatorBody): Response<Unit>
 
     @POST("/allfriend")
-    suspend fun getFriends(@Body requestBody: GetFriendsRequest): Response<List<Friend>>//L
+    suspend fun getFriends(@Body requestBody: GetFriendsRequest): Response<List<Friend>>
 
     @POST("/request")
-    suspend fun getRequest(@Body requestBody: GetFriendsRequest): Response<List<Friend>>//L
+    suspend fun getRequest(@Body requestBody: GetFriendsRequest): Response<List<Friend>>
 
     @PUT("/addFriend")
-    suspend fun acceptRequest(@Body requestBody: AddFriendsRequest): Response<Unit>//L
+    suspend fun acceptRequest(@Body requestBody: AddFriendsRequest): Response<Unit>
 
     @PUT("/sendFriendRequest")
-    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest): Response<Unit>//L
+    suspend fun sendFriendRequest(@Body requestBody: SendFriendRequest): Response<Unit>
 
     @POST("/getUserInfo")
-    suspend fun getUserInfo(@Body requestBody: IdUserRequestBody): Response<UserInfo>//L
+    suspend fun getUserInfo(@Body requestBody: IdUserRequestBody): Response<UserInfo>
 
     @PUT("/updateUserInfo")
-    suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest): Response<Unit>//L
+    suspend fun updateUserInfo(@Body requestBody: UpdateUserInfoRequest): Response<Unit>
 
     @PUT("/updateAvatar")
-    suspend fun updateAvatar(@Body requestBody: UpdateAvatarRequestBody): Response<Unit>//L
+    suspend fun updateAvatar(@Body requestBody: UpdateAvatarRequestBody): Response<Unit>
 }

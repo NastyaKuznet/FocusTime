@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
@@ -57,45 +58,39 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
                 viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
                     when (uiState) {
                         is UIState.Success -> {
-                            with(binding){
-                                avatarContainer.visibility = View.VISIBLE
-                                userNickname.visibility = View.VISIBLE
-                                userStatus.visibility = View.VISIBLE
-                                info.visibility = View.VISIBLE
-                                indicatorsList.visibility = View.VISIBLE
-                                buttons.visibility = View.VISIBLE
-                                loading.visibility = View.GONE
-                            }
+                            avatarContainer.visibility = View.VISIBLE
+                            userNickname.visibility = View.VISIBLE
+                            userStatus.visibility = View.VISIBLE
+                            info.visibility = View.VISIBLE
+                            indicatorsList.visibility = View.VISIBLE
+                            buttons.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
 
                             //binding.userAvatar = uiState.value.
-                            binding.userNickname.text = uiState.value.nickname
-                            binding.userStatus.text = uiState.value.status
-                            binding.friendsCount.text = "Friends: " + uiState.value.friends_count
-                            binding.focusTime.text = "Focus Time: " + uiState.value.total_focus_time
+                            userNickname.text = uiState.value.nickname
+                            userStatus.text = uiState.value.status
+                            friendsCount.text = "Friends: " + uiState.value.friends_count
+                            focusTime.text = "Focus Time: " + uiState.value.total_focus_time
                             Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                         }
                         is UIState.Fail -> {
-                            with(binding){
-                                avatarContainer.visibility = View.VISIBLE
-                                userNickname.visibility = View.VISIBLE
-                                userStatus.visibility = View.VISIBLE
-                                info.visibility = View.VISIBLE
-                                indicatorsList.visibility = View.VISIBLE
-                                buttons.visibility = View.VISIBLE
-                                loading.visibility = View.GONE
-                            }
+                            avatarContainer.visibility = View.VISIBLE
+                            userNickname.visibility = View.VISIBLE
+                            userStatus.visibility = View.VISIBLE
+                            info.visibility = View.VISIBLE
+                            indicatorsList.visibility = View.VISIBLE
+                            buttons.visibility = View.VISIBLE
+                            loading.visibility = View.GONE
                             Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                         }
                         is UIState.Loading -> {
-                            with(binding){
-                                avatarContainer.visibility = View.GONE
-                                userNickname.visibility = View.GONE
-                                userStatus.visibility = View.GONE
-                                info.visibility = View.GONE
-                                indicatorsList.visibility = View.GONE
-                                buttons.visibility = View.GONE
-                                loading.visibility = View.VISIBLE
-                            }
+                            avatarContainer.visibility = View.GONE
+                            userNickname.visibility = View.GONE
+                            userStatus.visibility = View.GONE
+                            info.visibility = View.GONE
+                            indicatorsList.visibility = View.GONE
+                            buttons.visibility = View.GONE
+                            loading.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -138,7 +133,8 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
 
         binding.exitAccount.setOnClickListener{
             viewModel.deleteUserIdLocale(userId)
-            makeCurrentFragment(RegistrationFragment())
+            findNavController().navigate(R.id.registrationFragment)
+            //makeCurrentFragment(RegistrationFragment())
         }
 
         super.onViewCreated(view, savedInstanceState)
