@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.focustime.R
 import com.example.focustime.presentation.friends.Friend
 
-class RequestAdapter(private var friends: List<Friend>, private val onAddFriendClicked: (Friend) -> Boolean) : RecyclerView.Adapter<RequestAdapter.FriendViewHolder>() {
+class RequestAdapter(
+    private var friends: List<Friend>,
+    private val onAddFriendClicked: (Friend) -> Boolean,
+    private val accountFriend: (Int) -> Unit
+) : RecyclerView.Adapter<RequestAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val friendAvatar: ImageView = itemView.findViewById(R.id.friendAvatar)
@@ -36,6 +40,10 @@ class RequestAdapter(private var friends: List<Friend>, private val onAddFriendC
             if (result){
                 holder.addFriendButton.text = "✓"
             }
+        }
+
+        holder.itemView.setOnClickListener{
+            accountFriend(friend.user_id)
         }
     }
 

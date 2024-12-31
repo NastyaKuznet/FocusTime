@@ -15,6 +15,7 @@ import com.example.focustime.databinding.FragmentAccountUserBinding
 import com.example.focustime.databinding.FragmentAccountUserEditBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,19 +43,21 @@ class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {
                     editUserStatus.text.toString()
                 )
 
-
                 lifecycleScope.launch {
-                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                        when (uiState.success) {
-                            ResultUIState.Success -> {
-                                Toast.makeText(requireContext(), "good", Toast.LENGTH_LONG).show()
+                    viewModel.uiState.observe(viewLifecycleOwner) {
+                        when (it) {
+                            is UIState.Success -> {
+                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                                    .show()
                             }
-
-                            ResultUIState.Error -> {
-                                Toast.makeText(requireContext(), "error", Toast.LENGTH_LONG).show()
+                            is UIState.Fail -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-
-                            else -> {}
+                            else ->{}
                         }
                     }
                 }

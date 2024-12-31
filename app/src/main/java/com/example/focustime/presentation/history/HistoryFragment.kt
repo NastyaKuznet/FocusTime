@@ -15,6 +15,7 @@ import com.example.focustime.databinding.FragmentHistoryBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import javax.inject.Inject
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {
@@ -94,6 +95,16 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
                 }
             }
         }
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onAttach(context: Context) {

@@ -12,6 +12,8 @@ import com.example.focustime.R
 import com.example.focustime.databinding.FragmentSendRequestBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
+import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,25 +40,32 @@ class SendRequestFragment : Fragment(R.layout.fragment_send_request) {
 
                 lifecycleScope.launch {
                     viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                        when (uiState.success) {
-                            ResultUIState.Success -> {
-                                Toast.makeText(requireContext(), "Заявка отправлена", Toast.LENGTH_LONG).show()
+                        when (uiState) {
+                            is UIState.Success -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
                             }
-                            ResultUIState.Error -> {
-                                Toast.makeText(requireContext(), "error", Toast.LENGTH_LONG).show()
+                            is UIState.Fail -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
                             }
-                            ResultUIState.AlreadyExists -> {
-                                Toast.makeText(requireContext(), "заявка уже кинута", Toast.LENGTH_LONG).show()
-                            }
-                            else -> {}
+                            else ->{}
                         }
                     }
                 }
             }
         }
 
-
         super.onViewCreated(view, savedInstanceState)
+
+        binding.userAvatar.setOnClickListener{
+            makeCurrentFragment(AccountUserFragment())
+        }
+    }
+
+    private fun makeCurrentFragment(fragment: Fragment) {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onAttach(context: Context) {

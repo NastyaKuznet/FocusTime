@@ -9,7 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.focustime.R
 
-class FriendsAdapter(private var friends: List<Friend>) : RecyclerView.Adapter<FriendsAdapter.FriendViewHolder>() {
+class FriendsAdapter(
+    private var friends: List<Friend>,
+    private val accountFriend: (Int) -> Unit
+) : RecyclerView.Adapter<FriendsAdapter.FriendViewHolder>() {
 
     var friendOrRequest = 0;
 
@@ -25,13 +28,8 @@ class FriendsAdapter(private var friends: List<Friend>) : RecyclerView.Adapter<F
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
-        return if (friendOrRequest == 0) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend, parent, false)
-            FriendViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_request, parent, false)
-            FriendViewHolder(view)
-        }
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend, parent, false)
+        return FriendViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
@@ -39,6 +37,10 @@ class FriendsAdapter(private var friends: List<Friend>) : RecyclerView.Adapter<F
         //holder.friendAvatar.setImageResource(R.drawable.ic_friend_avatar)
         holder.friendNickname.text = friend.user_nickname
         holder.friendFocusTime.text = friend.user_status
+
+        holder.itemView.setOnClickListener{
+            accountFriend(friend.user_id)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -48,12 +50,5 @@ class FriendsAdapter(private var friends: List<Friend>) : RecyclerView.Adapter<F
     fun updateFriends(newFriends: List<Friend>) {
         friends = newFriends
         notifyDataSetChanged()
-    }
-
-    fun showTwoFriends() {
-        val fakeFriend1 = Friend(1, "Возможный друг1", "Буп")
-        val fakeFriend2 = Friend(2, "Возможный друг2", "Тык")
-        val updatedFriends = listOf(fakeFriend1, fakeFriend2)
-        updateFriends(updatedFriends)
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.focustime.domain.usecases.AcceptRequestUseCase
 import com.example.focustime.domain.usecases.GetRequestUseCase
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.friends.Friend
 import com.example.focustime.presentation.models.ResultUIFriends
 import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.toUIState
@@ -18,8 +19,8 @@ class AcceptRequestFragmentViewModel @Inject constructor(
     private val acceptRequestUseCase: AcceptRequestUseCase
 ) : ViewModel() {
 
-    private val _uiStateRequest = MutableLiveData<ResultUIFriends>()
-    val uiStateRequest: LiveData<ResultUIFriends>
+    private val _uiStateRequest = MutableLiveData<UIState<List<Friend>>>()
+    val uiStateRequest: LiveData<UIState<List<Friend>>>
         get() = _uiStateRequest
 
     private val _uiState = MutableLiveData<UIState<Unit>>()
@@ -35,17 +36,10 @@ class AcceptRequestFragmentViewModel @Inject constructor(
     }
 
     fun loadFriends(userId: Int){
-        _uiStateRequest.value = ResultUIFriends(
-            emptyList(),
-            ResultUIState.Loading
-        )
+        _uiStateRequest.value = UIState.Loading
         viewModelScope.launch {
             val result = getRequestUseCase.invoke(userId)
-            _uiStateRequest.value = ResultUIFriends(result.friends,
-                when (result.success) {
-                    true -> ResultUIState.Success
-                    false -> ResultUIState.Error
-                })
+            _uiStateRequest.value = result.toUIState()
         }
     }
 }

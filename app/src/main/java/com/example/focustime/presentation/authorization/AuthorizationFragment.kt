@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.models.ResultUIState
 
 
@@ -37,20 +38,25 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
 
                 lifecycleScope.launch {
                     viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                        when (uiState.resultUIState) {
-                            ResultUIState.Success -> {
-                                Toast.makeText(requireContext(), "nice", Toast.LENGTH_LONG).show()
+                        when (uiState) {
+                            is UIState.Success -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                                 val bundle = Bundle()
-                                bundle.putInt("userId", uiState.user.id)
-                                saveUserIdToPreferences(requireContext(), uiState.user.id)
+                                bundle.putInt("userId", uiState.value.id)
+                                saveUserIdToPreferences(requireContext(), uiState.value.id)
                                 findNavController().navigate(
                                     R.id.rootFragment,
                                     bundle)
                             }
-                            ResultUIState.Error -> {
-                                Toast.makeText(requireContext(), "Пользователь не найден", Toast.LENGTH_LONG).show()
+                            is UIState.Fail -> {
+                                content.visibility = View.VISIBLE
+                                loading.visibility = View.GONE
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                             }
-                            else -> {}
+                            is UIState.Loading -> {
+                                content.visibility = View.GONE
+                                loading.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
