@@ -6,7 +6,7 @@ import com.example.focustime.data.database.model.UserInfoEntity.Companion.TABLE_
 
 @Entity(tableName = TABLE_NAME)
 data class UserInfoEntity (
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int = 0,
     val idUser: Int,
 ){
