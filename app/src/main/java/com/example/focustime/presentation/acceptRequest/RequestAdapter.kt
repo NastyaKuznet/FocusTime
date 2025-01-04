@@ -12,7 +12,7 @@ import com.example.focustime.presentation.friends.Friend
 
 class RequestAdapter(
     private var friends: List<Friend>,
-    private val onAddFriendClicked: (Friend) -> Boolean,
+    private val onAddFriendClicked: (Friend, (Boolean) -> Unit) -> Unit,
     private val accountFriend: (Int) -> Unit
 ) : RecyclerView.Adapter<RequestAdapter.FriendViewHolder>() {
 
@@ -30,15 +30,16 @@ class RequestAdapter(
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         val friend = friends[position]
-        //holder.friendAvatar.setImageResource(R.drawable.ic_friend_avatar)
+        holder.friendAvatar.setImageResource(setUpAvatar(friend.avatar_id))
         holder.friendNickname.text = friend.user_nickname
         holder.friendFocusTime.text = friend.user_status
 
         holder.addFriendButton.setOnClickListener {
-            val result = onAddFriendClicked(friend)
-
-            if (result){
-                holder.addFriendButton.text = "✓"
+            onAddFriendClicked(friend) { result ->
+                if (result) {
+                    holder.addFriendButton.text = "✓"
+                    holder.addFriendButton.isEnabled = false
+                }
             }
         }
 
@@ -49,6 +50,18 @@ class RequestAdapter(
 
     override fun getItemCount(): Int {
         return friends.size
+    }
+
+    private fun setUpAvatar(avatarId: Int): Int{
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.avatar1
+        }
+        return avatarResId
     }
 
     fun updateFriends(newFriends: List<Friend>) {

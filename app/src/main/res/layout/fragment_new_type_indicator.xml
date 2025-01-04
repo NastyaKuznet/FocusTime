@@ -29,8 +29,9 @@
 
             <ImageView
                 android:id="@+id/userAvatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="4dp"
                 android:background="@color/white"/>
         </LinearLayout>
 
@@ -43,7 +44,8 @@
             android:text="Сохранить новый тип индикатора"
             app:layout_constraintTop_toBottomOf="@id/ll_head"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/button_color"/>
 
         <EditText
             android:id="@+id/et_input_name"
@@ -73,7 +75,8 @@
             android:text="Загрузить изображения"
             app:layout_constraintTop_toBottomOf="@id/tv_load"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/button_color"/>
 
 
         <ScrollView

@@ -433,20 +433,20 @@ class RemoteDatabaseRepositoryImpl @Inject constructor(
             } else if(result.code() == 404) {
                 StateResponse(State.FAIL,
                     "Такого пользователя нет",
-                    UserInfo("","",0,0))
+                    UserInfo("","",0,0,0))
             } else if(result.code() == 500) {
                 StateResponse(State.FAIL,
                     "Сервер не работает",
-                    UserInfo("","",0,0))
+                    UserInfo("","",0,0,0))
             } else {
                 StateResponse(State.FAIL,
                     "Сервер ответил кодом: ${result.code()}",
-                    UserInfo("","",0,0))
+                    UserInfo("","",0,0,0))
             }
         } catch (e: HttpException){
             return StateResponse(State.FAIL,
                 "Ошибка: $e",
-                UserInfo("","",0,0))
+                UserInfo("","",0,0,0))
         }
     }
 

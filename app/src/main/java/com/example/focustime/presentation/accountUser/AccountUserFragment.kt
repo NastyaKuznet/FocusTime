@@ -63,15 +63,20 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
                             userStatus.visibility = View.VISIBLE
                             info.visibility = View.VISIBLE
                             indicatorsList.visibility = View.VISIBLE
-                            buttons.visibility = View.VISIBLE
+                            if (friendId != -1) {
+                                binding.buttons.visibility = View.GONE
+                                binding.changeAvatarButton.visibility = View.GONE
+                            }
+                            else {
+                                buttons.visibility = View.VISIBLE
+                            }
                             loading.visibility = View.GONE
 
-                            //binding.userAvatar = uiState.value.
+                            setUpAvatar(uiState.value.id_avatar)
                             userNickname.text = uiState.value.nickname
                             userStatus.text = uiState.value.status
                             friendsCount.text = "Friends: " + uiState.value.friends_count
-                            focusTime.text = "Focus Time: " + uiState.value.total_focus_time
-                            Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
+                            focusTime.text = formatTime(uiState.value.total_focus_time)
                         }
                         is UIState.Fail -> {
                             avatarContainer.visibility = View.VISIBLE
@@ -97,7 +102,11 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
             }
         }
 
-        viewModelHistory.getIndicators(userId)
+        if (friendId == -1) {
+            viewModelHistory.getIndicators(userId)
+        } else {
+            viewModelHistory.getIndicators(friendId)
+        }
         with(binding) {
             with(indicatorsList) {
                 adapter = this@AccountUserFragment.indicatorAdapter
@@ -119,30 +128,55 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
             }
         }
 
-        if (friendId != -1) {
-            binding.buttons.visibility = View.GONE
-        }
-
         binding.registerButton.setOnClickListener{
             makeCurrentFragment(AccountUserEditFragment())
         }
 
         binding.changeAvatarButton.setOnClickListener{
             makeCurrentFragment(AvatarFragment())
+
         }
 
         binding.exitAccount.setOnClickListener{
             viewModel.deleteUserIdLocale(userId)
             findNavController().navigate(R.id.registrationFragment)
-            //makeCurrentFragment(RegistrationFragment())
+            clearShared()
         }
 
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun clearShared(){
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
+    }
+
+    private fun formatTime(totalSeconds: Int): String{
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+
+        val formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        return "Focus Time: $formattedTime"
+    }
+
+    private fun setUpAvatar(avatarId:Int){
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.avatar1
+        }
+        binding.userAvatar.setImageResource(avatarResId)
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {

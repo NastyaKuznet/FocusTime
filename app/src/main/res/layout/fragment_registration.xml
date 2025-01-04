@@ -41,6 +41,7 @@
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:backgroundTint="@color/button_color"
             android:text="Зарегистрироваться"/>
 
         <TextView
