@@ -16,10 +16,7 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.avatar.AvatarFragment
-import com.example.focustime.presentation.history.HistoryViewModel
 import com.example.focustime.presentation.history.IndicatorsAdapter
-import com.example.focustime.presentation.registration.RegistrationFragment
-import com.example.focustime.presentation.registration.RegistrationUserFragmentViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,8 +28,6 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
     private val binding: FragmentAccountUserBinding by viewBinding()
 
     private val viewModel: AccountUserFragmentViewModel by viewModels() {viewModelFactory}
-
-    private val viewModelHistory: HistoryViewModel by viewModels() {viewModelFactory}
 
     private val indicatorAdapter = IndicatorsAdapter()
 
@@ -103,19 +98,17 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
         }
 
         if (friendId == -1) {
-            viewModelHistory.getIndicators(userId)
+            viewModel.getIndicators(userId)
         } else {
-            viewModelHistory.getIndicators(friendId)
+            viewModel.getIndicators(friendId)
         }
         with(binding) {
             with(indicatorsList) {
                 adapter = this@AccountUserFragment.indicatorAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
-
-            viewModelHistory.filterIndicators(HistoryViewModel.FilterType.ALL)
         }
-        viewModelHistory.currentIndicators.observe(viewLifecycleOwner){
+        viewModel.currentIndicators.observe(viewLifecycleOwner){
             when(it){
                 is UIState.Success -> {
                     indicatorAdapter.submitList(it.value)
