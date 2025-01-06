@@ -66,6 +66,15 @@
     не менее 8 символов и не более 10 символов,
     может состоять только из латинских букв и (или) цифр" />
 
+        <TextView
+            android:id="@+id/offline_mode_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/offline_mode_button_text"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center"
+            android:textStyle="italic"/>
+
     </LinearLayout>
 
     <ProgressBar

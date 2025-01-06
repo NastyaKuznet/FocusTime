@@ -1,12 +1,11 @@
 package com.example.focustime.presentation.accountUser
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.focustime.data.database.model.UserInfoEntity
 import com.example.focustime.data.models.UserInfo
-import com.example.focustime.domain.usecases.DeleteUserIdLocaleUseCase
 import com.example.focustime.domain.usecases.getUserInfoUseCase
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.toUIState
@@ -16,7 +15,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AccountUserFragmentViewModel @Inject constructor(
-    private val deleteUserIdLocaleUseCase: DeleteUserIdLocaleUseCase,
     private val sendFriendRequestUseCase: getUserInfoUseCase
 ) : ViewModel() {
 
@@ -37,13 +35,15 @@ class AccountUserFragmentViewModel @Inject constructor(
         }
     }
 
-    fun deleteUserIdLocale(userId: Int){
+    fun deleteUserIdLocale(context: Context){
         viewModelScope.launch {
             _stateCheckUserId.value = UIState.Loading
-            val result = withContext(Dispatchers.IO) {
-                deleteUserIdLocaleUseCase(userId)
-            }
-            _stateCheckUserId.value = result.toUIState()
+            val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt("userId", 0)
+            editor.putBoolean("offlineMode", false)
+            editor.apply()
+            _stateCheckUserId.value = UIState.Success(Unit, "")
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.focustime.presentation.indicators
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -31,11 +32,11 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
     private val adapter = TypeIndicatorsAdapter(::onClick)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
-        viewModel.getTypesIndicators(userId)
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
+        val userId = sharedPreferences.getInt("userId", 0)
+
+        viewModel.getTypesIndicators(offlineMode, userId)
         with(binding){
             createIndicatorButton.setOnClickListener {
                 goScreenCreateNewTypeIndicator()

@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.State
 import com.example.focustime.domain.usecases.AddIndicatorUseCase
 import com.example.focustime.domain.usecases.GetImagesUseCase
+import com.example.focustime.domain.usecases.localDatabase.image.GetImagesByIdTypeLocalUseCase
+import com.example.focustime.domain.usecases.localDatabase.indicator.AddIndicatorLocalUseCase
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.delay
@@ -22,6 +24,8 @@ import java.util.Locale
 class NewFocusViewModel @Inject constructor(
     private val getImagesUseCase: GetImagesUseCase,
     private val addIndicatorUseCase: AddIndicatorUseCase,
+    private val getImagesByIdTypeLocalUseCase: GetImagesByIdTypeLocalUseCase,
+    private val addIndicatorLocalUseCase: AddIndicatorLocalUseCase,
 ): ViewModel() {
 
     private val _time = MutableLiveData(0L)
@@ -44,7 +48,7 @@ class NewFocusViewModel @Inject constructor(
     private var images = MutableLiveData<MutableList<InputStream>>()
 
 
-    fun startTimer(endTime: Int, idType: Int, userId: Int) {
+    fun startTimer(offlineMode: Boolean, endTime: Int, idType: Int, userId: Int) {
         var endT = 0
         if(endTime < 5) {
             endT = 5
@@ -56,13 +60,23 @@ class NewFocusViewModel @Inject constructor(
 
         job = viewModelScope.launch {
             _stateLoadingImages.value = UIState.Loading
-            val result = getImagesUseCase(idType)
-            _stateLoadingImages.value = result.toUIState()
-            if(result.state == State.FAIL){
-                Log.d("startTimer", "image not get")
-                return@launch
+            if(offlineMode){
+                val resultLocal = getImagesByIdTypeLocalUseCase(idType)
+                _stateLoadingImages.value = resultLocal.toUIState()
+                if (resultLocal.state == State.FAIL) {
+                    Log.d("startTimer", "image not get")
+                    return@launch
+                }
+                images.value = resultLocal.content.toMutableList()
+            } else {
+                val result = getImagesUseCase(idType)
+                _stateLoadingImages.value = result.toUIState()
+                if (result.state == State.FAIL) {
+                    Log.d("startTimer", "image not get")
+                    return@launch
+                }
+                images.value = result.content.toMutableList()
             }
-            images.value = result.content.toMutableList()
 
             while (_time.value != endTime.toLong()) {
                 delay(1000L)
@@ -78,8 +92,13 @@ class NewFocusViewModel @Inject constructor(
             }
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val formattedDateTime = formatter.format(Date())
-            val savedState = addIndicatorUseCase(userId, endTime, idType, formattedDateTime)
-            _stateTime.value = savedState.toUIState()
+            if(offlineMode){
+                val savedStateLocale = addIndicatorLocalUseCase(endTime, idType, formattedDateTime)
+                _stateTime.value = savedStateLocale.toUIState()
+            } else {
+                val savedState = addIndicatorUseCase(userId, endTime, idType, formattedDateTime)
+                _stateTime.value = savedState.toUIState()
+            }
         }
     }
 

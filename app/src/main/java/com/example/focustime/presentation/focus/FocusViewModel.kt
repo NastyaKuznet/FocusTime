@@ -7,12 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.State
 import com.example.focustime.data.models.TypeIndicator
 import com.example.focustime.domain.usecases.GetTypesIndicatorsUseCase
+import com.example.focustime.domain.usecases.localDatabase.typeIndicator.GetTypesIndicatorLocalUseCase
 import com.example.focustime.presentation.UIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FocusViewModel @Inject constructor(
     private val getTypesIndicatorsUseCase: GetTypesIndicatorsUseCase,
+    private val getTypesIndicatorLocalUseCase: GetTypesIndicatorLocalUseCase,
 ): ViewModel() {
 
     private val _listTypesIndicators = MutableLiveData<UIState<List<String>>>()
@@ -33,20 +35,35 @@ class FocusViewModel @Inject constructor(
 
     private var typeIndicators = listOf<TypeIndicator>()
 
-    fun getTypesIndicators(userId: Int){
+    fun getTypesIndicators(offlineMode: Boolean, userId: Int){
         viewModelScope.launch {
             _listTypesIndicators.value = UIState.Loading
-            val result = getTypesIndicatorsUseCase(userId)
-            if(result.state == State.FAIL){
-                _listTypesIndicators.value = UIState.Fail(result.message)
-                return@launch
+            if(offlineMode){
+                val resultLocal = getTypesIndicatorLocalUseCase()
+                if(resultLocal.state == State.FAIL){
+                    _listTypesIndicators.value = UIState.Fail(resultLocal.message)
+                    return@launch
+                }
+                typeIndicators = resultLocal.content
+                val forSpinner = mutableListOf<String>()
+                for(el in typeIndicators){
+                    forSpinner.add(el.name)
+                }
+                _listTypesIndicators.value = UIState.Success(forSpinner, resultLocal.message)
+            } else {
+                val result = getTypesIndicatorsUseCase(userId)
+                if (result.state == State.FAIL) {
+                    _listTypesIndicators.value = UIState.Fail(result.message)
+                    return@launch
+                }
+                typeIndicators = result.content
+                val forSpinner = mutableListOf<String>()
+                for(el in typeIndicators){
+                    forSpinner.add(el.name)
+                }
+                _listTypesIndicators.value = UIState.Success(forSpinner, result.message)
             }
-            typeIndicators = result.content
-            val forSpinner = mutableListOf<String>()
-            for(el in typeIndicators){
-                forSpinner.add(el.name)
-            }
-            _listTypesIndicators.value = UIState.Success(forSpinner, result.message)
+
         }
     }
 

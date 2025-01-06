@@ -28,13 +28,13 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
+        val userId = sharedPreferences.getInt("userId", 0)
+        val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
 
-        viewModel.getTypesIndicators(userId)
+
+        viewModel.getTypesIndicators(offlineMode, userId)
         viewModel.listTypeIndicators.observe(viewLifecycleOwner){
             when(it) {
                 is UIState.Success -> {

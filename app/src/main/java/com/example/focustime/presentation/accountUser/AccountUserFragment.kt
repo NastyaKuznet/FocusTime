@@ -97,7 +97,7 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
             }
         }
 
-        viewModelHistory.getIndicators(userId)
+        /*viewModelHistory.getIndicators(userId)
         with(binding) {
             with(indicatorsList) {
                 adapter = this@AccountUserFragment.indicatorAdapter
@@ -117,7 +117,7 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
                 is UIState.Loading -> {
                 }
             }
-        }
+        }*/
 
         if (friendId != -1) {
             binding.buttons.visibility = View.GONE
@@ -132,9 +132,8 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
         }
 
         binding.exitAccount.setOnClickListener{
-            viewModel.deleteUserIdLocale(userId)
+            viewModel.deleteUserIdLocale(requireContext())
             findNavController().navigate(R.id.registrationFragment)
-            //makeCurrentFragment(RegistrationFragment())
         }
 
         super.onViewCreated(view, savedInstanceState)

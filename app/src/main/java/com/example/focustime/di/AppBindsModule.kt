@@ -4,14 +4,16 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.focustime.data.database.LocalDatabase
-import com.example.focustime.data.database.dao.UserInfoDAO
+import com.example.focustime.data.database.dao.*
 import com.example.focustime.data.database.repository.*
 import com.example.focustime.data.network.repositories.*
 import com.example.focustime.domain.usecases.*
+import com.example.focustime.domain.usecases.localDatabase.image.*
+import com.example.focustime.domain.usecases.localDatabase.indicator.*
+import com.example.focustime.domain.usecases.localDatabase.typeIndicator.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 interface AppBindsModule {
@@ -64,16 +66,25 @@ interface AppBindsModule {
     fun updateAvatarUseCase(repository: UpdateAvatarUseCaseImpl): UpdateAvatarUseCase
 
     @Binds
-    fun bindSaveUserIdInLocaleUseCase(repository: SaveUserIdInLocaleUseCaseImpl): SaveUserIdInLocaleUseCase
-
-    @Binds
-    fun bindGetUserIdLocaleUseCase(repository: GetUserIdLocaleUseCaseImpl): GetUserIdLocaleUseCase
-
-    @Binds
-    fun bindDeleteUserIdLocaleUseCase(useCase: DeleteUserIdLocaleUseCaseImpl): DeleteUserIdLocaleUseCase
-
-    @Binds
     fun bindAcceptRequestUseCase(repository: AcceptRequestUseCaseImpl): AcceptRequestUseCase
+
+    @Binds
+    fun bindGetAllIndicatorsLocalUseCase(useCase: GetAllIndicatorsLocalUseCaseImpl): GetAllIndicatorsLocalUseCase
+
+    @Binds
+    fun bindAddTypeIndicatorLocalUseCase(useCase: AddTypeIndicatorLocalUseCaseImpl): AddTypeIndicatorLocalUseCase
+
+    @Binds
+    fun bindGetTypesIndicatorLocalUseCase(useCase: GetTypesIndicatorLocalUseCaseImpl): GetTypesIndicatorLocalUseCase
+
+    @Binds
+    fun bindGetImageByIdTypeLocalUseCase(useCase: GetImagesByIdTypeLocalUseCaseImpl): GetImagesByIdTypeLocalUseCase
+
+    @Binds
+    fun bindDeleteTypeIndicatorLocalUseCase(useCase: DeleteTypeIndicatorLocalUseCaseImpl): DeleteTypeIndicatorLocalUseCase
+
+    @Binds
+    fun bindAddIndicatorLocalUseCase(useCase: AddIndicatorLocalUseCaseImpl): AddIndicatorLocalUseCase
 
     @Binds
     //@Singleton
@@ -95,6 +106,14 @@ interface AppBindsModule {
 
         @Provides
         //@Singleton
-        fun provideUserInfoDAO(db: LocalDatabase): UserInfoDAO = db.userInfoDao
+        fun provideIndicatorDAO(db: LocalDatabase): IndicatorDAO = db.indicatorDao
+
+        @Provides
+        //@Singleton
+        fun provideImageDAO(db: LocalDatabase): ImageDAO = db.imageDao
+
+        @Provides
+        //@Singleton
+        fun provideTypeIndicatorDAO(db: LocalDatabase): TypeIndicatorDAO = db.typeIndicatorDAO
     }
 }
