@@ -131,7 +131,7 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
         }
 
         binding.exitAccount.setOnClickListener{
-            viewModel.deleteUserIdLocale(userId)
+            viewModel.deleteUserIdLocale(requireContext())
             findNavController().navigate(R.id.registrationFragment)
             clearShared()
         }
