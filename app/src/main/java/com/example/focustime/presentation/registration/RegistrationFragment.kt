@@ -16,6 +16,7 @@ import com.example.focustime.di.appComponent
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 

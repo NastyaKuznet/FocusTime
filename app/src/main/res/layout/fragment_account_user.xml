@@ -41,7 +41,6 @@
             android:id="@+id/userAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@color/custom_background"
             android:scaleType="centerCrop" />
 
         <Button
@@ -51,6 +50,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="+"
+            app:backgroundTint="@color/button_color"
             android:padding="1dp"/>
     </RelativeLayout>
 
@@ -126,6 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:backgroundTint="@color/button_color"
             android:text="Редактировать" />
 
         <Button
@@ -133,6 +134,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:backgroundTint="@color/button_color"
             android:text="Выйти из аккаунта" />
     </LinearLayout>
 

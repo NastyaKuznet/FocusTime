@@ -100,6 +100,25 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         binding.userAvatar.setOnClickListener{
             makeCurrentFragment(AccountUserFragment())
         }
+
+        setUpAvatar()
+    }
+
+    private fun setUpAvatar(){
+        val avatarId = arguments?.getInt("avatarId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("avatarId", -1)
+        }
+
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.avatar1
+        }
+        binding.userAvatar.setImageResource(avatarResId)
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {
