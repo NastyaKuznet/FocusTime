@@ -32,7 +32,7 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val friendsAdapter = RequestAdapter(emptyList(),::onAddFriendClicked,::accountFriend)
+        val friendsAdapter = RequestAdapter(emptyList(), ::onAddFriendClicked, ::accountFriend)
         binding.requestList.adapter = friendsAdapter
         binding.requestList.layoutManager = LinearLayoutManager(context)
 
@@ -45,7 +45,7 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
                             loading.visibility = View.GONE
                         }
                         friendsAdapter.updateFriends(uiState.value)
-                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
+                        //Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Fail -> {
                         with(binding){
@@ -73,6 +73,8 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
         binding.userAvatar.setOnClickListener{
             makeCurrentFragment(AccountUserFragment())
         }
+
+        setUpAvatar()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {
@@ -97,9 +99,7 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
         makeCurrentFragment(fragment)
     }
 
-    private fun onAddFriendClicked(friend: Friend): Boolean{
-        var result = false
-
+    private fun onAddFriendClicked(friend: Friend, onResult: (Boolean) -> Unit){
         val userId1 = friend.user_id
 
         val userId2 = arguments?.getInt("userId") ?: run {
@@ -112,9 +112,8 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
             viewModel.uiState.observe(viewLifecycleOwner) {
                 when (it) {
                     is UIState.Success -> {
-                        result = true
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                            .show()
+                        onResult(true)
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                     is UIState.Fail -> {
                         Toast.makeText(
@@ -127,7 +126,22 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
                 }
             }
         }
+    }
 
-        return result
+    private fun setUpAvatar(){
+        val avatarId = arguments?.getInt("avatarId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("avatarId", -1)
+        }
+
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.avatar1
+        }
+        binding.userAvatar.setImageResource(avatarResId)
     }
 }

@@ -47,7 +47,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                             loading.visibility = View.GONE
                         }
                         friendsAdapter.updateFriends(uiState.value)
-                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
+                        //Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Fail -> {
                         with(binding){
@@ -72,6 +72,8 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         }
         viewModel.loadFriends(userId)
 
+        setUpAvatar()
+
         binding.addFriendButton.setOnClickListener {
             makeCurrentFragment(SendRequestFragment())
         }
@@ -83,6 +85,23 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         binding.userAvatar.setOnClickListener{
             makeCurrentFragment(AccountUserFragment())
         }
+    }
+
+    private fun setUpAvatar(){
+        val avatarId = arguments?.getInt("avatarId") ?: run {
+            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            sharedPreferences.getInt("avatarId", -1)
+        }
+
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.avatar1
+        }
+        binding.userAvatar.setImageResource(avatarResId)
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {

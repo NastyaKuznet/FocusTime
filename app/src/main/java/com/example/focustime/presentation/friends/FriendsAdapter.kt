@@ -1,5 +1,6 @@
 package com.example.focustime.presentation.friends
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,13 +35,25 @@ class FriendsAdapter(
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         val friend = friends[position]
-        //holder.friendAvatar.setImageResource(R.drawable.ic_friend_avatar)
+        holder.friendAvatar.setImageResource(setUpAvatar(friend.avatar_id))
         holder.friendNickname.text = friend.user_nickname
         holder.friendFocusTime.text = friend.user_status
 
         holder.itemView.setOnClickListener{
             accountFriend(friend.user_id)
         }
+    }
+
+    private fun setUpAvatar(avatarId: Int): Int{
+        val avatarResId = when (avatarId) {
+            0 -> R.drawable.avatar1
+            1 -> R.drawable.avatar2
+            2 -> R.drawable.avatar3
+            3 -> R.drawable.avatar4
+            4 -> R.drawable.avatar5
+            else -> R.drawable.default_avatar
+        }
+        return avatarResId
     }
 
     override fun getItemCount(): Int {

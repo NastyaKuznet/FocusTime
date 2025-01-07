@@ -4,46 +4,38 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <LinearLayout
+        android:id="@+id/ll_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/custom_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/screenTitle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Создание нового типа индикатора"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/white"/>
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-        <LinearLayout
-            android:id="@+id/ll_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:background="@color/custom_background"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <TextView
-                android:id="@+id/screenTitle"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Создание нового типа индикатора"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/userAvatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@color/white"/>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Сохранить новый тип индикатора"
-            app:layout_constraintTop_toBottomOf="@id/ll_head"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/ll_head"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
             android:id="@+id/et_input_name"
@@ -52,7 +44,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:hint="Введите название:"
-            app:layout_constraintTop_toBottomOf="@id/save"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
@@ -73,13 +65,15 @@
             android:text="Загрузить изображения"
             app:layout_constraintTop_toBottomOf="@id/tv_load"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/button_color"/>
 
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/load">
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/load"
+            app:layout_constraintBottom_toTopOf="@id/save">
             <LinearLayout
                 android:id="@+id/container_images"
                 android:layout_width="match_parent"
@@ -88,6 +82,18 @@
                 />
         </ScrollView>
 
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Сохранить новый тип индикатора"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/button_color"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar

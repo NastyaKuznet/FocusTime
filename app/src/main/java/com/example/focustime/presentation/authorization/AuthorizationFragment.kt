@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.collectLatest
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.focustime.presentation.UIState
+import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
 import com.example.focustime.presentation.models.ResultUIState
 
 
@@ -29,7 +30,10 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
 
     private val viewModel: AuthorizationUserFragmentViewModel by viewModels() {viewModelFactory}
 
+    private val viewModelAccountInfo: AccountUserFragmentViewModel by viewModels() {viewModelFactory}
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         with(binding){
             buttonLogin.setOnClickListener {
                 viewModel.authorization(
@@ -40,13 +44,10 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
                     viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
                         when (uiState) {
                             is UIState.Success -> {
-                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                                 val bundle = Bundle()
                                 bundle.putInt("userId", uiState.value.id)
                                 saveUserIdToPreferences(requireContext(), uiState.value.id)
-                                findNavController().navigate(
-                                    R.id.rootFragment,
-                                    bundle)
+                                saveUserAvatarIdToPreferences(requireContext(), uiState.value.id, bundle)
                             }
                             is UIState.Fail -> {
                                 content.visibility = View.VISIBLE
@@ -68,6 +69,32 @@ class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
         }
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun saveUserAvatarIdToPreferences(context: Context, userId: Int, bundle: Bundle){
+        viewModelAccountInfo.getUserInfo(userId)
+
+        lifecycleScope.launch{
+            viewModelAccountInfo.uiState.observe(viewLifecycleOwner) {
+                when(it){
+                    is UIState.Success -> {
+                        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putInt("avatarId", it.value.id_avatar)
+                        editor.apply()
+
+                        findNavController().navigate(
+                            R.id.rootFragment,
+                            bundle)
+                    }
+                    is UIState.Fail -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    }
+                    is UIState.Loading -> {
+                    }
+                }
+            }
+        }
     }
 
     fun saveUserIdToPreferences(context: Context, userId: Int) {
