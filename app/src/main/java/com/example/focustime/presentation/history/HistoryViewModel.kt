@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.focustime.data.models.Indicator
 import com.example.focustime.domain.usecases.GetAllIndicatorsUseCase
+import com.example.focustime.domain.usecases.localDatabase.indicator.GetAllIndicatorsLocalUseCase
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class HistoryViewModel @Inject constructor(
     private val getAllIndicatorsUseCase: GetAllIndicatorsUseCase,
+    private val getAllIndicatorsLocalUseCase: GetAllIndicatorsLocalUseCase,
 ): ViewModel() {
 
     private val _currentIndicators = MutableLiveData<UIState<List<Indicator>>>()
@@ -30,20 +32,17 @@ class HistoryViewModel @Inject constructor(
         currentDate = formatter.format(Date())
     }
 
-    fun getIndicators(userId: Int){
+    fun getIndicators(offlineMode: Boolean, userId: Int){
         getDateNow()
         viewModelScope.launch {
             _currentIndicators.value = UIState.Loading
-            val result = getAllIndicatorsUseCase(userId)
-            indicators = result.toUIState()
-            when(indicators) {
-                is UIState.Success -> {
-
-                    _currentIndicators.value = indicators
-                }
-                is UIState.Fail -> _currentIndicators.value = indicators
-                else -> {}
+            val result = if(offlineMode){
+                getAllIndicatorsLocalUseCase()
+            } else{
+                getAllIndicatorsUseCase(userId)
             }
+            indicators = result.toUIState()
+            _currentIndicators.value = indicators
         }
     }
 
@@ -65,7 +64,7 @@ class HistoryViewModel @Inject constructor(
 
     private fun filterByDay(indicators: List<Indicator>): List<Indicator> {
         val day = currentDate.substring(currentDate.length - 2)
-        return indicators.filter { it.day.endsWith(day) }
+        return indicators.filter { it.day.substring(8,10) == day }
     }
 
     private fun filterByMonth(indicators: List<Indicator>): List<Indicator> {

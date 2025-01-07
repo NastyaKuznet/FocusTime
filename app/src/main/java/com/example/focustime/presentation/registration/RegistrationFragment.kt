@@ -29,19 +29,16 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel.checkLocaleUserId()
+        viewModel.checkOfflineMode(requireContext())
+        viewModel.checkLocaleUserId(requireContext())
 
         with(binding){
 
-            viewModel.stateCheckUserId.observe(viewLifecycleOwner){
+            viewModel.stateCheckOfflineMode.observe(viewLifecycleOwner){
                 when(it){
                     is UIState.Success -> {
-                        val bundle = Bundle()
-                        bundle.putInt("userId", it.value.idUser)
-                        saveUserIdToPreferences(requireContext(), it.value.idUser)
                         findNavController().navigate(
-                            R.id.rootFragment,
-                            bundle)
+                            R.id.rootFragment)
                     }
                     is UIState.Fail -> {
                         content.visibility = View.VISIBLE
@@ -52,7 +49,23 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                         loading.visibility = View.VISIBLE
                     }
                 }
+            }
 
+            viewModel.stateCheckUserId.observe(viewLifecycleOwner){
+                when(it){
+                    is UIState.Success -> {
+                        findNavController().navigate(
+                            R.id.rootFragment)
+                    }
+                    is UIState.Fail -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                    }
+                    is UIState.Loading -> {
+                        content.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                    }
+                }
             }
 
             buttonRegister.setOnClickListener {
@@ -66,12 +79,9 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                             is UIState.Success -> {
 
                                 Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
-                                val bundle = Bundle()
-                                bundle.putInt("userId", uiState.value.id)
-                                saveUserIdToPreferences(requireContext(), uiState.value.id)
+                                saveUserIdToPreferences(uiState.value.id)
                                 findNavController().navigate(
-                                    R.id.rootFragment,
-                                    bundle)
+                                    R.id.rootFragment)
                             }
                             is UIState.Fail -> {
                                 content.visibility = View.VISIBLE
@@ -86,19 +96,31 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                     }
                 }
             }
+
             textViewLogin.setOnClickListener {
                 findNavController().navigate(R.id.action_registrationFragment_to_authorizationFragment)
             }
 
+            offlineModeButton.setOnClickListener {
+                saveOfflineMode()
+                findNavController().navigate(R.id.rootFragment)
+            }
         }
 
         super.onViewCreated(view, savedInstanceState)
     }
 
-    fun saveUserIdToPreferences(context: Context, userId: Int) {
-        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+    private fun saveUserIdToPreferences(userId: Int) {
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("userId", userId)
+        editor.apply()
+    }
+
+    private fun saveOfflineMode() {
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("offlineMode", true)
         editor.apply()
     }
 
