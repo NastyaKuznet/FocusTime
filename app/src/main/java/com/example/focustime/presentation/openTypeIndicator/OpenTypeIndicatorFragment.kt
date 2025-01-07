@@ -37,8 +37,12 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
 
         val idType = arguments?.getInt("idTypeIndicator")
         val nameType = arguments?.getString("nameTypeIndicator")
+
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
+
         if(idType != null)
-            viewModel.getImages(idType)
+            viewModel.getImages(offlineMode, idType)
 
 
         with(binding){
@@ -66,7 +70,7 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
             }
             deleteTypeIndicator.setOnClickListener {
                 if(idType != null) {
-                    viewModel.deleteType(idType)
+                    viewModel.deleteType(offlineMode, idType)
                     lifecycleScope.launch {
                         viewModel.stateDel.observe(viewLifecycleOwner) {
                             when (it) {

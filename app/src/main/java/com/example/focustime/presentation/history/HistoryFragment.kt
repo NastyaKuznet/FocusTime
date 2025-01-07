@@ -35,11 +35,11 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
-        viewModel.getIndicators(userId)
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
+        val userId = sharedPreferences.getInt("userId", 0)
+
+        viewModel.getIndicators(offlineMode, userId)
         val periods = arrayOf( "За всё время", "За день", "За месяц", "За год")
         val adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

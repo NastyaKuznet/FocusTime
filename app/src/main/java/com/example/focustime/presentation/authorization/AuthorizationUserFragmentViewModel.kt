@@ -7,15 +7,12 @@ import com.example.focustime.domain.usecases.AuthorizationUserUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.example.focustime.data.State
 import com.example.focustime.data.models.User
-import com.example.focustime.domain.usecases.SaveUserIdInLocaleUseCase
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.toUIState
 
 class AuthorizationUserFragmentViewModel @Inject constructor(
     private val authorizationUserUseCase: AuthorizationUserUseCase,
-    private val saveUserIdInLocaleUseCase: SaveUserIdInLocaleUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableLiveData<UIState<User>>()
@@ -34,9 +31,6 @@ class AuthorizationUserFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             val result = authorizationUserUseCase.invoke(nickname, password)
             _uiState.value = result.toUIState()
-            if(result.state == State.SUCCESS){
-                saveUserIdInLocaleUseCase(result.content.id)
-            }
         }
     }
 
