@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
+import com.example.focustime.presentation.avatar.AvatarFragment
 import kotlinx.coroutines.launch
 
 
@@ -75,13 +76,18 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
                 }
             }
         }
-        super.onViewCreated(view, savedInstanceState)
+
         
         binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
+            if(offlineMode){
+                makeCurrentFragment(AvatarFragment())
+            } else {
+                makeCurrentFragment(AccountUserFragment())
+            }
         }
 
         setUpAvatar()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setUpAvatar(){

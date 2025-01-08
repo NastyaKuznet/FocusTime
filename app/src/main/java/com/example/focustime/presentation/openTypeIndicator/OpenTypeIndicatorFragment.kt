@@ -18,6 +18,7 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
+import com.example.focustime.presentation.avatar.AvatarFragment
 import com.example.focustime.presentation.indicators.IndicatorsFragment
 import kotlinx.coroutines.launch
 import java.io.InputStream
@@ -102,14 +103,18 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
 
 
         binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
+            if(offlineMode){
+                makeCurrentFragment(AvatarFragment())
+            } else {
+                makeCurrentFragment(AccountUserFragment())
+            }
         }
 
         setUpAvatar()
     }
 
     private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
+        val avatarId = run {
             val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             sharedPreferences.getInt("avatarId", -1)
         }

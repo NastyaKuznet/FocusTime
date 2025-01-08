@@ -60,6 +60,7 @@ class AvatarFragment : Fragment(R.layout.fragment_avatar) {
                     when (it) {
                         is UIState.Success -> {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                            requireActivity().supportFragmentManager.popBackStack()
                         }
                         is UIState.Fail -> {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT ).show()
