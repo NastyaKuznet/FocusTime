@@ -15,6 +15,7 @@ import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserEditFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.avatar.AvatarFragment
+import com.example.focustime.presentation.offlineSetting.OfflineSettingFragment
 import dagger.BindsInstance
 
 import dagger.Component
@@ -42,6 +43,7 @@ interface AppComponent {
     fun inject(fragment: AccountUserFragment)
     fun inject(fragment: AccountUserEditFragment)
     fun inject(fragment: AvatarFragment)
+    fun inject(fragment: OfflineSettingFragment)
 
     @Component.Builder
     interface Builder {

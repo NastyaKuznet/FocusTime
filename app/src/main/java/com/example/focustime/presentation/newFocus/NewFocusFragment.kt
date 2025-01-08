@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +15,8 @@ import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.app.AlertDialog
+import androidx.activity.OnBackPressedCallback
 
 class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
 
@@ -26,6 +26,9 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
     private val binding: FragmentNewFocusBinding by viewBinding()
 
     private val viewModel: NewFocusViewModel by viewModels() {viewModelFactory}
+
+    private var wasExit: Boolean = false
+    private var wasFinish: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val time = arguments?.getInt("time")
@@ -68,6 +71,7 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
         viewModel.stateTime.observe(viewLifecycleOwner){
             when(it){
                 is UIState.Success -> {
+                    wasFinish = true
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 is UIState.Fail -> {
@@ -94,6 +98,12 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
             }
         }
 
+        val backPressedCallback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                showBackConfirmationDialog()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -108,6 +118,49 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
         val hours = TimeUnit.MINUTES.toHours(minutes)
         val remainingMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
         return String.format("%02d:%02d:%02d", hours, remainingMinutes, remainingSeconds)
+    }
+
+    private fun showBackConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Предупреждение")
+            .setMessage("Таймер сбросится, если выйдете из приложения. Продолжить?")
+            .setPositiveButton("Выйти") { _, _ ->
+                viewModel.pauseTimer()
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+            .setNegativeButton("Продолжить") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if(!wasExit && !wasFinish) {
+            viewModel.pauseTimer()
+            showExitConfirmationDialog()
+        }
+    }
+
+    private fun showExitConfirmationDialog() {
+        wasExit = true
+        AlertDialog.Builder(requireContext())
+            .setTitle("Предупреждение")
+            .setMessage("Ваши минуты не были сохранены, потому что вы покинули приложение.")
+            .setPositiveButton("Ясно") { _, _ ->
+                viewModel.pauseTimer()
+                if(isCurrentFragment())
+                    requireActivity().supportFragmentManager.popBackStack()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun isCurrentFragment() : Boolean{
+        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as? androidx.navigation.fragment.NavHostFragment
+        val currentFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
+        return currentFragment is NewFocusFragment
     }
 
     override fun onDestroyView() {

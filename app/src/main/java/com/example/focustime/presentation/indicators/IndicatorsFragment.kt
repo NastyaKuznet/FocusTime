@@ -16,6 +16,7 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
+import com.example.focustime.presentation.avatar.AvatarFragment
 import com.example.focustime.presentation.createNewTypeIndicator.NewTypeIndicatorFragment
 import com.example.focustime.presentation.openTypeIndicator.OpenTypeIndicatorFragment
 import javax.inject.Inject
@@ -32,6 +33,8 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
     private val adapter = TypeIndicatorsAdapter(::onClick)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
         val userId = sharedPreferences.getInt("userId", 0)
@@ -79,10 +82,14 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
 
         }
 
-        super.onViewCreated(view, savedInstanceState)
+
         
         binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
+            if(offlineMode){
+                makeCurrentFragment(AvatarFragment())
+            } else {
+                makeCurrentFragment(AccountUserFragment())
+            }
         }
 
         setUpAvatar()

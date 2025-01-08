@@ -87,6 +87,9 @@ interface AppBindsModule {
     fun bindAddIndicatorLocalUseCase(useCase: AddIndicatorLocalUseCaseImpl): AddIndicatorLocalUseCase
 
     @Binds
+    fun bindDeleteAllIndicatorsLocalUseCase(useCase: DeleteAllIndicatorsLocalUseCaseImpl): DeleteAllIndicatorsLocalUseCase
+
+    @Binds
     //@Singleton
     fun bindLocalDatabaseRepository(repository: LocalDatabaseRepositoryImpl): LocalDatabaseRepository
 

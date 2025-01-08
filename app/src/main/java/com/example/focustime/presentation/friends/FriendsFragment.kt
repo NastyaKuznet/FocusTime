@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FriendsFragment : Fragment(R.layout.fragment_friends) {
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -47,7 +48,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                             loading.visibility = View.GONE
                         }
                         friendsAdapter.updateFriends(uiState.value)
-                        //Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Fail -> {
                         with(binding){
@@ -65,11 +65,8 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                 }
             }
         }
-
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
         viewModel.loadFriends(userId)
 
         setUpAvatar()
