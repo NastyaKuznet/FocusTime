@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
@@ -17,8 +16,7 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
-import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
-import kotlinx.coroutines.launch
+import com.example.focustime.presentation.avatar.AvatarFragment
 import javax.inject.Inject
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {
@@ -49,7 +47,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
             periodSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
-                    itemSelected: View, selectedItemPosition: Int, selectedId: Long
+                    view: View?, selectedItemPosition: Int, selectedId: Long
                 ) {
                     val adapter = parent?.adapter as? ArrayAdapter<String>
                     val selectedText = adapter?.getItem(selectedItemPosition) ?: ""
@@ -99,7 +97,11 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
             }
         }
         binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
+            if(offlineMode){
+                makeCurrentFragment(AvatarFragment())
+            } else {
+                makeCurrentFragment(AccountUserFragment())
+            }
         }
 
         setUpAvatar()

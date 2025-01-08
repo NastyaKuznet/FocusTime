@@ -16,6 +16,7 @@ import com.example.focustime.presentation.acceptRequest.AcceptRequestFragmentVie
 import com.example.focustime.presentation.accountUser.AccountUserEditFragmentViewModel
 import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
 import com.example.focustime.presentation.avatar.AvatarFragmentViewModel
+import com.example.focustime.presentation.offlineSetting.OfflineSettingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -95,4 +96,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AvatarFragmentViewModel::class)
     abstract fun bindAvatarFragmentViewModel(viewModel: AvatarFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OfflineSettingViewModel::class)
+    abstract fun bindOfflineSettingViewModel(viewModel: OfflineSettingViewModel): ViewModel
 }
