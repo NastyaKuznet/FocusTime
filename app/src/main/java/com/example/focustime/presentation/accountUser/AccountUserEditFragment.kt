@@ -16,7 +16,6 @@ import com.example.focustime.databinding.FragmentAccountUserEditBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
-import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,12 +28,8 @@ class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {
     private val viewModel: AccountUserEditFragmentViewModel by viewModels() { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences =
-                requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
-
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
 
         with(binding) {
             saveButton.setOnClickListener {
@@ -42,27 +37,24 @@ class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {
                     userId,
                     editUserStatus.text.toString()
                 )
-
-                lifecycleScope.launch {
-                    viewModel.uiState.observe(viewLifecycleOwner) {
-                        when (it) {
-                            is UIState.Success -> {
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            is UIState.Fail -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    it.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            else ->{}
-                        }
-                    }
-                }
             }
+        }
 
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.Success -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(
+                        requireContext(),
+                        state.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else ->{}
+            }
         }
 
         super.onViewCreated(view, savedInstanceState)

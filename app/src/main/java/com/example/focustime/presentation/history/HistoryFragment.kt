@@ -15,8 +15,6 @@ import com.example.focustime.databinding.FragmentHistoryBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
-import com.example.focustime.presentation.accountUser.AccountUserFragment
-import com.example.focustime.presentation.avatar.AvatarFragment
 import javax.inject.Inject
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {
@@ -49,7 +47,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
                     parent: AdapterView<*>?,
                     view: View?, selectedItemPosition: Int, selectedId: Long
                 ) {
-                    val adapter = parent?.adapter as? ArrayAdapter<String>
+                    val adapter = parent?.adapter as? ArrayAdapter<*>
                     val selectedText = adapter?.getItem(selectedItemPosition) ?: ""
                     when(selectedText){
                         "За день"  -> {
@@ -78,40 +76,28 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
 
             periodSpinner.adapter = adapterSpinner
         }
-        viewModel.currentIndicators.observe(viewLifecycleOwner){
-            when(it){
-                is UIState.Success -> {
-                    binding.content.visibility = View.VISIBLE
-                    binding.loading.visibility = View.GONE
-                    indicatorAdapter.submitList(it.value)
-                }
-                is UIState.Fail -> {
-                    binding.content.visibility = View.VISIBLE
-                    binding.loading.visibility = View.GONE
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-                is UIState.Loading -> {
-                    binding.content.visibility = View.GONE
-                    binding.loading.visibility = View.VISIBLE
+
+        viewModel.currentIndicators.observe(viewLifecycleOwner){ state ->
+            with(binding) {
+                when (state) {
+                    is UIState.Success -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        indicatorAdapter.submitList(state.value)
+                    }
+                    is UIState.Fail -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is UIState.Loading -> {
+                        content.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                    }
                 }
             }
         }
-        binding.userAvatar.setOnClickListener{
-            if(offlineMode){
-                makeCurrentFragment(AvatarFragment())
-            } else {
-                makeCurrentFragment(AccountUserFragment())
-            }
-        }
 
-        setUpAvatar()
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     override fun onAttach(context: Context) {
@@ -119,20 +105,4 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         super.onAttach(context)
     }
 
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
 }

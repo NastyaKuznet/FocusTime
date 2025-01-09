@@ -8,8 +8,6 @@ import com.example.focustime.domain.usecases.AcceptRequestUseCase
 import com.example.focustime.domain.usecases.GetRequestUseCase
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.friends.Friend
-import com.example.focustime.presentation.models.ResultUIFriends
-import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.toUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject

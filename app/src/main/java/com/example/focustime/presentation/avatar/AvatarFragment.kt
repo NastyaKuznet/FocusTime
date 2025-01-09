@@ -40,12 +40,23 @@ class AvatarFragment : Fragment(R.layout.fragment_avatar) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
 
         setupRecyclerView()
+
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.Success -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT ).show()
+                }
+                else ->{}
+            }
+        }
 
         binding.saveButton.setOnClickListener {
             if (selectedAvatar == null){
@@ -55,49 +66,12 @@ class AvatarFragment : Fragment(R.layout.fragment_avatar) {
 
             viewModel.updateAvatar(userId, selectedAvatar!!)
 
-            lifecycleScope.launch {
-                viewModel.uiState.observe(viewLifecycleOwner) {
-                    when (it) {
-                        is UIState.Success -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                            requireActivity().supportFragmentManager.popBackStack()
-                        }
-                        is UIState.Fail -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT ).show()
-                        }
-                        else ->{}
-                    }
-                }
-            }
-
             val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putInt("avatarId", selectedAvatar!!)
             editor.apply()
         }
 
-        setUpAvatar()
-
-        binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
-        }
-    }
-
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
     }
 
     private fun setupRecyclerView() {
@@ -116,12 +90,5 @@ class AvatarFragment : Fragment(R.layout.fragment_avatar) {
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 }

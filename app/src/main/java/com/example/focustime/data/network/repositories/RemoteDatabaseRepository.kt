@@ -6,7 +6,6 @@ import com.example.focustime.data.StateResponse
 import com.example.focustime.data.models.*
 import com.example.focustime.data.network.entities.ResultFriends
 import com.example.focustime.data.network.entities.ResultSendFriendRequest
-import com.example.focustime.presentation.models.ResultUI
 import com.example.focustime.data.network.entities.ResultUser
 import com.example.focustime.data.network.entities.request.*
 import com.example.focustime.data.network.entities.request.GetFriendsRequest

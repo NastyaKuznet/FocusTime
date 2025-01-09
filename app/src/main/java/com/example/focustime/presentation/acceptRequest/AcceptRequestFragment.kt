@@ -16,7 +16,6 @@ import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
 import com.example.focustime.presentation.friends.Friend
-import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,50 +30,40 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
 
         val friendsAdapter = RequestAdapter(emptyList(), ::onAddFriendClicked, ::accountFriend)
-        binding.requestList.adapter = friendsAdapter
-        binding.requestList.layoutManager = LinearLayoutManager(context)
 
-        lifecycleScope.launch {
-            viewModel.uiStateRequest.observe(viewLifecycleOwner) { uiState ->
-                when (uiState) {
+        with(binding){
+            requestList.adapter = friendsAdapter
+            requestList.layoutManager = LinearLayoutManager(context)
+        }
+
+        viewModel.uiStateRequest.observe(viewLifecycleOwner) { state ->
+            with(binding){
+                when (state) {
                     is UIState.Success -> {
-                        with(binding){
-                            requestList.visibility = View.VISIBLE
-                            loading.visibility = View.GONE
-                        }
-                        friendsAdapter.updateFriends(uiState.value)
-                        //Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
+                        requestList.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        friendsAdapter.updateFriends(state.value)
                     }
                     is UIState.Fail -> {
-                        with(binding){
-                            requestList.visibility = View.VISIBLE
-                            loading.visibility = View.GONE
-                        }
-                        Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
+                        requestList.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Loading -> {
-                        with(binding){
-                            requestList.visibility = View.GONE
-                            loading.visibility = View.VISIBLE
-                        }
+                        requestList.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
                     }
                 }
             }
+
         }
 
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
         viewModel.loadFriends(userId)
 
-        binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
-        }
-
-        setUpAvatar()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {
@@ -108,40 +97,22 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
         }
 
         viewModel.acceptRequest(userId1, userId2)
-        lifecycleScope.launch {
-            viewModel.uiState.observe(viewLifecycleOwner) {
-                when (it) {
-                    is UIState.Success -> {
-                        onResult(true)
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is UIState.Fail -> {
-                        Toast.makeText(
-                            requireContext(),
-                            it.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    else ->{}
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.Success -> {
+                    onResult(true)
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
+                is UIState.Fail -> {
+                    Toast.makeText(
+                        requireContext(),
+                        state.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else ->{}
             }
         }
     }
 
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
 }
