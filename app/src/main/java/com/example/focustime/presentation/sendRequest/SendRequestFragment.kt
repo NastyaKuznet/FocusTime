@@ -14,7 +14,6 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragment
-import com.example.focustime.presentation.models.ResultUIState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,64 +26,31 @@ class SendRequestFragment : Fragment(R.layout.fragment_send_request) {
     private val viewModel: SendRequestFragmentViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
+
         with(binding){
-            val userId = arguments?.getInt("userId") ?: run {
-                val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                sharedPreferences.getInt("userId", 0)
-            }
 
             buttonAdd.setOnClickListener {
                 viewModel.sendFriendRequest(
                     userId,
                     focusTimeInput.text.toString())
+            }
+        }
 
-                lifecycleScope.launch {
-                    viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                        when (uiState) {
-                            is UIState.Success -> {
-                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
-                            }
-                            is UIState.Fail -> {
-                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
-                            }
-                            else ->{}
-                        }
-                    }
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.Success -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
+                is UIState.Fail -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                }
+                else ->{}
             }
         }
 
         super.onViewCreated(view, savedInstanceState)
-
-        binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
-        }
-
-        setUpAvatar()
-    }
-
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     override fun onAttach(context: Context) {

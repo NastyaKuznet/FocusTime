@@ -7,22 +7,6 @@
     android:orientation="vertical"
     tools:context=".presentation.accountUser.AccountUserEditFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/custom_background">
-
-        <TextView
-            android:id="@+id/screenTitle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/action_bar_account_user"
-            android:textSize="18sp"/>
-    </LinearLayout>
-
     <EditText
         android:id="@+id/editUserStatus"
         android:layout_width="match_parent"

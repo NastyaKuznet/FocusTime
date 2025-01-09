@@ -29,56 +29,57 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("userId", 0)
         val offlineMode = sharedPreferences.getBoolean("offlineMode", false)
 
-
         viewModel.getTypesIndicators(offlineMode, userId)
-        viewModel.listTypeIndicators.observe(viewLifecycleOwner){
-            when(it) {
-                is UIState.Success -> {
-                    binding.content.visibility = View.VISIBLE
-                    binding.loading.visibility = View.GONE
-                    val periods = it.value
+        viewModel.listTypeIndicators.observe(viewLifecycleOwner){ state ->
+            with(binding) {
+                when (state) {
+                    is UIState.Success -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
 
-                    val adapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_spinner_item,
-                        periods
-                    )
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    binding.indicatorSpinner.adapter = adapter
-                }
-                is UIState.Fail -> {
-                    binding.content.visibility = View.VISIBLE
-                    binding.loading.visibility = View.GONE
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-                is UIState.Loading -> {
-                    binding.content.visibility = View.GONE
-                    binding.loading.visibility = View.VISIBLE
+                        val periods = state.value
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_spinner_item,
+                            periods
+                        )
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        indicatorSpinner.adapter = adapter
+                    }
+                    is UIState.Fail -> {
+                        content.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is UIState.Loading -> {
+                        content.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
+                    }
                 }
             }
         }
 
-        viewModel.hour.observe(viewLifecycleOwner){
-            if(it != null)
-                binding.focusTimeInputHour.setText(it.toString())
-        }
-
-        viewModel.minute.observe(viewLifecycleOwner){
-            if(it != null)
-                binding.focusTimeInputMinute.setText(it.toString())
-        }
-
-        viewModel.second.observe(viewLifecycleOwner){
-            if(it != null)
-                binding.focusTimeInputSecond.setText(it.toString())
-        }
-
         with(binding){
+
+            viewModel.hour.observe(viewLifecycleOwner){
+                if(it != null)
+                    focusTimeInputHour.setText(it.toString())
+            }
+
+            viewModel.minute.observe(viewLifecycleOwner){
+                if(it != null)
+                    focusTimeInputMinute.setText(it.toString())
+            }
+
+            viewModel.second.observe(viewLifecycleOwner){
+                if(it != null)
+                    focusTimeInputSecond.setText(it.toString())
+            }
 
             addTimeHour.setOnClickListener {
                 viewModel.incrementHour()
@@ -119,39 +120,6 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
                 }
             }
         }
-
-        binding.userAvatar.setOnClickListener{
-            if(offlineMode){
-                makeCurrentFragment(AvatarFragment())
-            } else {
-                makeCurrentFragment(AccountUserFragment())
-            }
-        }
-        setUpAvatar()
-    }
-
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     private fun goScreenCreateNewTypeIndicator(){
@@ -164,11 +132,12 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             sharedPreferences.getInt("userId", 0)
         }
+
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("userId", userId)
         editor.apply()
-        bundle.putInt("userId", userId)
+
         val fr = NewFocusFragment()
         fr.arguments = bundle
         getParentFragmentManager()
@@ -178,7 +147,7 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             .commit()
     }
 
-    fun translateToSecond(): Int{
+    private fun translateToSecond(): Int{
         return (viewModel.hour.value?.toInt() ?: 0) * 3600 +
                 (viewModel.minute.value?.toInt() ?: 0) * 60 +
                 (viewModel.second.value?.toInt() ?: 0)

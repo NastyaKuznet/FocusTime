@@ -48,27 +48,24 @@ class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {
                     userId,
                     editUserStatus.text.toString()
                 )
-
-                lifecycleScope.launch {
-                    viewModel.uiState.observe(viewLifecycleOwner) {
-                        when (it) {
-                            is UIState.Success -> {
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            is UIState.Fail -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    it.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            else ->{}
-                        }
-                    }
-                }
             }
+        }
 
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.Success -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                is UIState.Fail -> {
+                    Toast.makeText(
+                        requireContext(),
+                        state.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else ->{}
+            }
         }
 
         binding.themeSwitchButton.setOnClickListener{

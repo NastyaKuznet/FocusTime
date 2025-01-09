@@ -34,10 +34,8 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
     var friendId:Int = -1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userId = arguments?.getInt("userId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("userId", 0)
-        }
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("userId", 0)
 
         arguments?.let {
             friendId = it.getInt("friendId", -1)
@@ -49,49 +47,47 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
             viewModel.getUserInfo(friendId)
         }
         with(binding){
-            lifecycleScope.launch {
-                viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-                    when (uiState) {
-                        is UIState.Success -> {
-                            avatarContainer.visibility = View.VISIBLE
-                            userNickname.visibility = View.VISIBLE
-                            userStatus.visibility = View.VISIBLE
-                            info.visibility = View.VISIBLE
-                            indicatorsList.visibility = View.VISIBLE
-                            if (friendId != -1) {
-                                binding.buttons.visibility = View.GONE
-                                binding.changeAvatarButton.visibility = View.GONE
-                            }
-                            else {
-                                buttons.visibility = View.VISIBLE
-                            }
-                            loading.visibility = View.GONE
-
-                            setUpAvatar(uiState.value.id_avatar)
-                            userNickname.text = uiState.value.nickname
-                            userStatus.text = uiState.value.status
-                            friendsCount.text = "Friends: " + uiState.value.friends_count
-                            focusTime.text = formatTime(uiState.value.total_focus_time)
-                        }
-                        is UIState.Fail -> {
-                            avatarContainer.visibility = View.VISIBLE
-                            userNickname.visibility = View.VISIBLE
-                            userStatus.visibility = View.VISIBLE
-                            info.visibility = View.VISIBLE
-                            indicatorsList.visibility = View.VISIBLE
-                            buttons.visibility = View.VISIBLE
-                            loading.visibility = View.GONE
-                            Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
-                        }
-                        is UIState.Loading -> {
-                            avatarContainer.visibility = View.GONE
-                            userNickname.visibility = View.GONE
-                            userStatus.visibility = View.GONE
-                            info.visibility = View.GONE
-                            indicatorsList.visibility = View.GONE
+            viewModel.uiState.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    is UIState.Success -> {
+                        avatarContainer.visibility = View.VISIBLE
+                        userNickname.visibility = View.VISIBLE
+                        userStatus.visibility = View.VISIBLE
+                        info.visibility = View.VISIBLE
+                        indicatorsList.visibility = View.VISIBLE
+                        if (friendId != -1) {
                             buttons.visibility = View.GONE
-                            loading.visibility = View.VISIBLE
+                            changeAvatarButton.visibility = View.GONE
                         }
+                        else {
+                            buttons.visibility = View.VISIBLE
+                        }
+                        loading.visibility = View.GONE
+
+                        setUpAvatar(state.value.id_avatar)
+                        userNickname.text = state.value.nickname
+                        userStatus.text = state.value.status
+                        friendsCount.text = "Friends: " + state.value.friends_count
+                        focusTime.text = formatTime(state.value.total_focus_time)
+                    }
+                    is UIState.Fail -> {
+                        avatarContainer.visibility = View.VISIBLE
+                        userNickname.visibility = View.VISIBLE
+                        userStatus.visibility = View.VISIBLE
+                        info.visibility = View.VISIBLE
+                        indicatorsList.visibility = View.VISIBLE
+                        buttons.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    }
+                    is UIState.Loading -> {
+                        avatarContainer.visibility = View.GONE
+                        userNickname.visibility = View.GONE
+                        userStatus.visibility = View.GONE
+                        info.visibility = View.GONE
+                        indicatorsList.visibility = View.GONE
+                        buttons.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
                     }
                 }
             }
@@ -102,10 +98,22 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
         } else {
             viewModel.getIndicators(friendId)
         }
+
         with(binding) {
             with(indicatorsList) {
                 adapter = this@AccountUserFragment.indicatorAdapter
                 layoutManager = LinearLayoutManager(requireContext())
+            }
+            registerButton.setOnClickListener{
+                makeCurrentFragment(AccountUserEditFragment())
+            }
+            changeAvatarButton.setOnClickListener{
+                makeCurrentFragment(AvatarFragment())
+            }
+            exitAccount.setOnClickListener{
+                viewModel.deleteUserIdLocale(requireContext())
+                findNavController().navigate(R.id.registrationFragment)
+                clearShared()
             }
         }
         viewModel.currentIndicators.observe(viewLifecycleOwner){
@@ -119,21 +127,6 @@ class AccountUserFragment() : Fragment(R.layout.fragment_account_user) {
                 is UIState.Loading -> {
                 }
             }
-        }
-
-        binding.registerButton.setOnClickListener{
-            makeCurrentFragment(AccountUserEditFragment())
-        }
-
-        binding.changeAvatarButton.setOnClickListener{
-            makeCurrentFragment(AvatarFragment())
-
-        }
-
-        binding.exitAccount.setOnClickListener{
-            viewModel.deleteUserIdLocale(requireContext())
-            findNavController().navigate(R.id.registrationFragment)
-            clearShared()
         }
 
         super.onViewCreated(view, savedInstanceState)

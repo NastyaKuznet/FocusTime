@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.accountUser.AccountUserFragmentViewModel
-import com.example.focustime.presentation.models.ResultUIState
 
 
 class AuthorizationFragment : Fragment(R.layout.fragment_authorization) {
