@@ -45,101 +45,74 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         if(idType != null)
             viewModel.getImages(offlineMode, idType)
 
+        viewModel.images.observe(viewLifecycleOwner){ state ->
+            reactionByImages(state)
+        }
+
+        viewModel.stateDel.observe(viewLifecycleOwner) { state ->
+            reactionByDelete(state)
+        }
 
         with(binding){
             nameTypeIndicatorOpen.text = nameType
-            viewModel.images.observe(viewLifecycleOwner){
-                when(it){
-                    is UIState.Success -> {
-                        binding.content.visibility = View.VISIBLE
-                        binding.loading.visibility = View.GONE
-                        for (i in 0 until  it.value.size) {
-                            addPictureOnScreen(it.value[i], i)
-                        }
-                    }
-                    is UIState.Fail -> {
-                        binding.content.visibility = View.VISIBLE
-                        binding.loading.visibility = View.GONE
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is UIState.Loading -> {
-                        binding.content.visibility = View.GONE
-                        binding.loading.visibility = View.VISIBLE
-                    }
-                }
 
-            }
             deleteTypeIndicator.setOnClickListener {
                 if(idType != null) {
                     viewModel.deleteType(offlineMode, idType)
-                    lifecycleScope.launch {
-                        viewModel.stateDel.observe(viewLifecycleOwner) {
-                            when (it) {
-                                is UIState.Success -> {
-                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                                        .show()
-                                    goScreenOpenTypeIndicator()
-                                }
-
-                                is UIState.Fail -> {
-                                    binding.content.visibility = View.VISIBLE
-                                    binding.loading.visibility = View.GONE
-                                    Toast.makeText(
-                                        requireContext(),
-                                        it.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                is UIState.Loading -> {
-                                    binding.content.visibility = View.GONE
-                                    binding.loading.visibility = View.VISIBLE
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
 
+    }
 
-        binding.userAvatar.setOnClickListener{
-            if(offlineMode){
-                makeCurrentFragment(AvatarFragment())
-            } else {
-                makeCurrentFragment(AccountUserFragment())
+    private fun reactionByImages(state: UIState<List<InputStream>>){
+        with(binding) {
+            when (state) {
+                is UIState.Success -> {
+                    content.visibility = View.VISIBLE
+                    loading.visibility = View.GONE
+                    for (i in 0 until state.value.size) {
+                        addPictureOnScreen(state.value[i], i)
+                    }
+                }
+
+                is UIState.Fail -> {
+                    content.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is UIState.Loading -> {
+                    content.visibility = View.GONE
+                    loading.visibility = View.VISIBLE
+                }
             }
         }
-
-        setUpAvatar()
     }
 
-    private fun setUpAvatar(){
-        val avatarId = run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
+    private fun reactionByDelete(state: UIState<Unit>){
+        with(binding){
+            when (state) {
+                is UIState.Success -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT)
+                        .show()
+                    goScreenOpenTypeIndicator()
+                }
+                is UIState.Fail -> {
+                    content.visibility = View.VISIBLE
+                    loading.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        state.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is UIState.Loading -> {
+                    content.visibility = View.GONE
+                    loading.visibility = View.VISIBLE
+                }
+            }
         }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    override fun onAttach(context: Context) {
-        context.appComponent.inject(this)
-        super.onAttach(context)
     }
 
     private fun addPictureOnScreen(inputStream: InputStream, i: Int){
@@ -149,7 +122,7 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         val paramsTv = tv.layoutParams as? ViewGroup.MarginLayoutParams
             ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         paramsTv.setMargins(10, 10, 10, 10)
-        tv.text = "${i+1} стадия"
+        tv.text = (i+1).toString() + " " +  requireContext().getString(R.string.stage)
         tv.layoutParams = paramsTv
         binding.containerImagesOpen.addView(tv)
 
@@ -158,6 +131,8 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
             ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         paramsIv.setMargins(10, 10, 10, 10)
         iv.layoutParams = paramsIv
+        iv.adjustViewBounds = true
+        iv.scaleType = ImageView.ScaleType.FIT_CENTER
         iv.setImageBitmap(bitmap)
         binding.containerImagesOpen.addView(iv)
     }
@@ -169,5 +144,10 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
             .replace(R.id.fragment_container, fr, "OPEN_TYPE_INDICATOR_FRAGMENT_TAG")
             .addToBackStack("OPEN_TYPE_INDICATOR_FRAGMENT_TAG")
             .commit()
+    }
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
     }
 }

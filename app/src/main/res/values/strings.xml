@@ -9,9 +9,7 @@
     <string name="action_bar_focus">Режим фокусировки</string>
     <string name="action_bar_friends">Друзья</string>
     <string name="action_bar_history">Индикаторы за период</string>
-    <string name="action_bar_indicators">Типы индикаторов</string>
-    <string name="action_bar_new_type_indicator">Создание нового типа индикатора</string>
-    <string name="action_bar_open_type_indicator">Создание нового типа индикатора</string>
+    <string name="action_bar_indicators">Индикаторы</string>
     <string name="action_bar_send_request">Добавить друга</string>
 
     <string name="button_edit">Редактировать</string>
@@ -22,7 +20,7 @@
     <string name="button_start_focusing">Начать фокусироваться</string>
     <string name="button_friend_requests">Заявки в друзья</string>
     <string name="button_add_friend">Добавить друга</string>
-    <string name="button_create_type_indicators">Создать новый тип индикатора</string>
+    <string name="button_create_type_indicators">Создать новый индикатор</string>
     <string name="button_abort">Прервать</string>
     <string name="button_pause">Пауза</string>
     <string name="button_upload">Загрузить изображения</string>
@@ -40,9 +38,9 @@
     <string name="register_not_account">Нет аккаунта? Зарегистрироваться</string>
     <string name="authorization_already_account">Уже есть аккаунт? Войти</string>
     <string name="choose_avatar">Выберите аватар</string>
-    <string name="select_type_indicator">Выберите тип индикатора</string>
+    <string name="select_type_indicator">Выберите индикатор</string>
     <string name="select_time">Укажите время фокусировки</string>
-    <string name="list_indicator_types">Список типов индикатора</string>
+    <string name="list_indicator_types">Список индикаторов</string>
     <string name="time_focus">Время сосредоточиться</string>
     <string name="upload_images">Загрузить 5 изображения состояния индикатора:</string>
     <string name="offline_info">Вы находитесь в оффлайн режиме. В данном режиме все сохраняется локально на телефоне. Вы можете удалять историю здесь.</string>
@@ -60,4 +58,30 @@
     <string name="input_password">Пароль</string>
     <string name="input_name_indicator">Введите название:</string>
     <string name="input_name_friend">Введите ник пользователя</string>
+
+    <string name="you_don_t_choose_picture">Вы не выбрали картинку</string>
+    <string name="you_need_choose_five_picture">Нужно выбрать пять изображений!</string>
+    <string name="stage">стадия</string>
+    <string name="you_need_choose_indicator">Нужно выбрать индикатор.</string>
+    <string name="you_need_write_time">Укажите время</string>
+
+    <string name="all_time">За всё время</string>
+    <string name="day">За день</string>
+    <string name="month">За месяц</string>
+    <string name="year">За год</string>
+
+    <string name="pause">Пауза</string>
+    <string name="continue_">Продолжить</string>
+    <string name="warning">Предупреждение</string>
+    <string name="warning_text">Таймер сбросится, если выйдете из приложения. Продолжить?</string>
+    <string name="warning_text2">Ваши минуты не были сохранены, потому что вы покинули приложение.</string>
+    <string name="exit">Выйти</string>
+    <string name="understand">Ясно</string>
+
+    <string name="history_clear">История очищена</string>
+
+    <string name="indicators_for_period">Индикаторы за период</string>
+    <string name="offline_setting">Оффлайн настройка</string>
+    <string name="root">Корень</string>
+
 </resources>

@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.app.AlertDialog
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.Lifecycle
 
 class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
 
@@ -88,12 +89,12 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
                 requireActivity().supportFragmentManager.popBackStack()
             }
             pause.setOnClickListener {
-                if(pause.text.toString() == "Пауза") {
+                if(pause.text.toString() == requireContext().getString(R.string.pause)) {
                     viewModel.pauseTimer()
-                    pause.text = "Продолжить"
+                    pause.text = requireContext().getString(R.string.continue_)
                 } else {
                     viewModel.startTimer(offlineMode, time!!, idType!!, userId)
-                    pause.text = "Пауза"
+                    pause.text = requireContext().getString(R.string.pause)
                 }
             }
         }
@@ -122,13 +123,14 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
 
     private fun showBackConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Предупреждение")
-            .setMessage("Таймер сбросится, если выйдете из приложения. Продолжить?")
-            .setPositiveButton("Выйти") { _, _ ->
+            .setTitle(requireContext().getString(R.string.warning))
+            .setMessage(requireContext().getString(R.string.warning_text))
+            .setPositiveButton(requireContext().getString(R.string.exit)) { _, _ ->
                 viewModel.pauseTimer()
+                wasExit = true
                 requireActivity().supportFragmentManager.popBackStack()
             }
-            .setNegativeButton("Продолжить") { dialog, _ ->
+            .setNegativeButton(requireContext().getString(R.string.continue_)) { dialog, _ ->
                 dialog.dismiss()
             }
             .setCancelable(false)
@@ -146,21 +148,24 @@ class NewFocusFragment: Fragment(R.layout.fragment_new_focus) {
     private fun showExitConfirmationDialog() {
         wasExit = true
         AlertDialog.Builder(requireContext())
-            .setTitle("Предупреждение")
-            .setMessage("Ваши минуты не были сохранены, потому что вы покинули приложение.")
-            .setPositiveButton("Ясно") { _, _ ->
-                viewModel.pauseTimer()
-                if(isCurrentFragment())
+            .setTitle(requireContext().getString(R.string.warning))
+            .setMessage(requireContext().getString(R.string.warning_text2))
+            .setPositiveButton(requireContext().getString(R.string.understand)) { _, _ ->
+                if(isCurrentFragment()){
                     requireActivity().supportFragmentManager.popBackStack()
+                }
             }
             .setCancelable(false)
             .show()
     }
 
-    private fun isCurrentFragment() : Boolean{
-        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.fragment_container) as? androidx.navigation.fragment.NavHostFragment
-        val currentFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
-        return currentFragment is NewFocusFragment
+    private fun isCurrentFragment(): Boolean {
+        val parentFragment = parentFragment
+            ?: return false
+
+        return parentFragment.childFragmentManager.fragments.any{
+            it is NewFocusFragment && it.lifecycle.currentState == Lifecycle.State.RESUMED
+        }
     }
 
     override fun onDestroyView() {

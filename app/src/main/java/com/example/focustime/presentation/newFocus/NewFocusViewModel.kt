@@ -46,21 +46,34 @@ class NewFocusViewModel @Inject constructor(
 
     private var job: Job? = null
     private var images = MutableLiveData<MutableList<InputStream>>()
+    private var isPaused = false
+    private var count = 0
+    private var endT = 0
 
 
     fun startTimer(offlineMode: Boolean, endTime: Int, idType: Int, userId: Int) {
-        var endT = 0
         if(endTime < 5) {
             endT = 5
         } else{
             endT = endTime
         }
-        val step = endT / 5 //константа стадий
-        var count = 0
+        val step = endT / 5
+
+        if (job?.isActive == true) {
+            isPaused = false
+            return
+        }
+        if (isPaused) {
+            job = viewModelScope.launch {
+                startCoroutine(offlineMode, endTime, step, idType, userId)
+            }
+            isPaused = false
+            return
+        }
 
         job = viewModelScope.launch {
             _stateLoadingImages.value = UIState.Loading
-            if(offlineMode){
+            if (offlineMode) {
                 val resultLocal = getImagesByIdTypeLocalUseCase(idType)
                 _stateLoadingImages.value = resultLocal.toUIState()
                 if (resultLocal.state == State.FAIL) {
@@ -77,34 +90,40 @@ class NewFocusViewModel @Inject constructor(
                 }
                 images.value = result.content.toMutableList()
             }
+            startCoroutine(offlineMode, endTime, step, idType, userId)
+        }
+    }
 
-            while (_time.value != endTime.toLong()) {
-                delay(1000L)
-                if(_time.value!! % step == 0L && count < images.value?.size ?: 0){
-                    _selectedImage.value = images.value?.get(count)
-                    count++
-                }
-                if(_selectedImage.value == null){
-                    _selectedImage.value = images.value?.get(count)
-                                    }
-                _time.value = (_time.value ?: 0L) + 1L
+    private suspend fun startCoroutine(offlineMode: Boolean, endTime: Int, step: Int, idType: Int, userId: Int) {
 
+
+        while (_time.value != endTime.toLong()) {
+            delay(1000L)
+            if (_time.value!! % step == 0L && count < images.value?.size ?: 0) {
+                _selectedImage.value = images.value?.get(count)
+                count++
             }
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val formattedDateTime = formatter.format(Date())
-            if(offlineMode){
-                val savedStateLocale = addIndicatorLocalUseCase(endTime, idType, formattedDateTime)
-                _stateTime.value = savedStateLocale.toUIState()
-            } else {
-                val savedState = addIndicatorUseCase(userId, endTime, idType, formattedDateTime)
-                _stateTime.value = savedState.toUIState()
+            if (_selectedImage.value == null) {
+                _selectedImage.value = images.value?.get(count)
             }
+            _time.value = (_time.value ?: 0L) + 1L
+
+        }
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formattedDateTime = formatter.format(Date())
+        if (offlineMode) {
+            val savedStateLocale = addIndicatorLocalUseCase(endTime, idType, formattedDateTime)
+            _stateTime.value = savedStateLocale.toUIState()
+        } else {
+            val savedState = addIndicatorUseCase(userId, endTime, idType, formattedDateTime)
+            _stateTime.value = savedState.toUIState()
         }
     }
 
     fun pauseTimer() {
         job?.cancel()
         job = null
+        isPaused = true
     }
 
 }

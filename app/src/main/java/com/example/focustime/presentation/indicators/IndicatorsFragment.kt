@@ -50,28 +50,24 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
             }
         }
 
-        viewModel.listTypeIndicators.observe(viewLifecycleOwner){
-            when(it){
-                is UIState.Success -> {
-                    with(binding){
+        viewModel.listTypeIndicators.observe(viewLifecycleOwner){ state ->
+            with(binding) {
+                when (state) {
+                    is UIState.Success -> {
                         indicatorListTitle.visibility = View.VISIBLE
                         indicatorList.visibility = View.VISIBLE
                         createIndicatorButton.visibility = View.VISIBLE
                         loading.visibility = View.GONE
+                        adapter.submitList(state.value)
                     }
-                    adapter.submitList(it.value)
-                }
-                is UIState.Fail -> {
-                    with(binding){
+                    is UIState.Fail -> {
                         indicatorListTitle.visibility = View.VISIBLE
                         indicatorList.visibility = View.VISIBLE
                         createIndicatorButton.visibility = View.VISIBLE
                         loading.visibility = View.GONE
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                     }
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-                is UIState.Loading -> {
-                    with(binding){
+                    is UIState.Loading -> {
                         indicatorListTitle.visibility = View.GONE
                         indicatorList.visibility = View.GONE
                         createIndicatorButton.visibility = View.GONE
@@ -79,49 +75,8 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
                     }
                 }
             }
-
         }
 
-
-        
-        binding.userAvatar.setOnClickListener{
-            if(offlineMode){
-                makeCurrentFragment(AvatarFragment())
-            } else {
-                makeCurrentFragment(AccountUserFragment())
-            }
-        }
-
-        setUpAvatar()
-    }
-
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
-    }
-
-    private fun makeCurrentFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    override fun onAttach(context: Context) {
-        context.appComponent.inject(this)
-        super.onAttach(context)
     }
 
     private fun goScreenCreateNewTypeIndicator(){
@@ -137,6 +92,7 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
         val bundle = Bundle()
         bundle.putInt("idTypeIndicator", typeIndicator.id)
         bundle.putString("nameTypeIndicator", typeIndicator.name)
+
         val fr = OpenTypeIndicatorFragment()
         fr.arguments = bundle
         getParentFragmentManager()
@@ -145,5 +101,10 @@ class IndicatorsFragment : Fragment(R.layout.fragment_indicators){
             .addToBackStack("OPEN_TYPE_INDICATOR_FRAGMENT_TAG")
             .commit()
 
+    }
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
     }
 }

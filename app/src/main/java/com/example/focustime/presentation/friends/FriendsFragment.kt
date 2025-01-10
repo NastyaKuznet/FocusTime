@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
@@ -16,10 +14,8 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.sendRequest.SendRequestFragment
-import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FriendsFragment : Fragment(R.layout.fragment_friends) {
@@ -35,31 +31,23 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         super.onViewCreated(view, savedInstanceState)
 
         val friendsAdapter = FriendsAdapter(emptyList(),::accountFriend)
-        binding.friendsList.adapter = friendsAdapter
-        binding.friendsList.layoutManager = LinearLayoutManager(context)
 
-        lifecycleScope.launch {
-            viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            with(binding) {
                 when (uiState) {
                     is UIState.Success -> {
-                        with(binding){
-                            friendsList.visibility = View.VISIBLE
-                            loading.visibility = View.GONE
-                        }
+                        friendsList.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
                         friendsAdapter.updateFriends(uiState.value)
                     }
                     is UIState.Fail -> {
-                        with(binding){
-                            friendsList.visibility = View.VISIBLE
-                            loading.visibility = View.GONE
-                        }
+                        friendsList.visibility = View.VISIBLE
+                        loading.visibility = View.GONE
                         Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Loading -> {
-                        with(binding){
-                            friendsList.visibility = View.GONE
-                            loading.visibility = View.VISIBLE
-                        }
+                        friendsList.visibility = View.GONE
+                        loading.visibility = View.VISIBLE
                     }
                 }
             }
@@ -68,36 +56,19 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         val userId = sharedPreferences.getInt("userId", 0)
         viewModel.loadFriends(userId)
 
-        setUpAvatar()
+        with(binding){
 
-        binding.addFriendButton.setOnClickListener {
-            makeCurrentFragment(SendRequestFragment())
+            friendsList.adapter = friendsAdapter
+            friendsList.layoutManager = LinearLayoutManager(context)
+
+            addFriendButton.setOnClickListener {
+                makeCurrentFragment(SendRequestFragment())
+            }
+            friendRequestsButton.setOnClickListener {
+                makeCurrentFragment(AcceptRequestFragment())
+            }
         }
 
-        binding.friendRequestsButton.setOnClickListener {
-            makeCurrentFragment(AcceptRequestFragment())
-        }
-
-        binding.userAvatar.setOnClickListener{
-            makeCurrentFragment(AccountUserFragment())
-        }
-    }
-
-    private fun setUpAvatar(){
-        val avatarId = arguments?.getInt("avatarId") ?: run {
-            val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            sharedPreferences.getInt("avatarId", -1)
-        }
-
-        val avatarResId = when (avatarId) {
-            0 -> R.drawable.avatar1
-            1 -> R.drawable.avatar2
-            2 -> R.drawable.avatar3
-            3 -> R.drawable.avatar4
-            4 -> R.drawable.avatar5
-            else -> R.drawable.avatar1
-        }
-        binding.userAvatar.setImageResource(avatarResId)
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {
