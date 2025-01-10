@@ -4,22 +4,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
-import com.example.focustime.databinding.FragmentAccountUserBinding
 import com.example.focustime.databinding.FragmentAccountUserEditBinding
 import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
-import com.example.focustime.presentation.models.ResultUIState
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AccountUserEditFragment : Fragment(R.layout.fragment_account_user_edit) {

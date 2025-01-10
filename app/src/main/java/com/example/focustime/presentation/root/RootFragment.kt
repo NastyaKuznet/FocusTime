@@ -65,25 +65,25 @@ class RootFragment: Fragment(R.layout.fragment_root) {
     private fun setTitleByCurrentFragment(fragment: Fragment){
         val title = when(fragment){
             is HistoryFragment -> {
-                "Индикаторы за период"
+                requireContext().getString(R.string.indicators_for_period)
             }
             is FocusFragment -> {
-                "Режим фокусировки"
+                requireContext().getString(R.string.action_bar_focus)
             }
             is OfflineSettingFragment -> {
-                "Оффлайн настройка"
+                requireContext().getString(R.string.offline_setting)
             }
             is IndicatorsFragment -> {
-                "Индикаторы"
+                requireContext().getString(R.string.action_bar_indicators)
             }
             is FriendsFragment -> {
-                "Друзья"
+                requireContext().getString(R.string.action_bar_friends)
             }
             is AccountUserFragment -> {
-                "Экран профиля"
+                requireContext().getString(R.string.action_bar_account_user)
             }
             else -> {
-                "Корень"
+                " "
             }
         }
         with(binding){

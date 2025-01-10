@@ -60,7 +60,7 @@ class AvatarFragment : Fragment(R.layout.fragment_avatar) {
 
         binding.saveButton.setOnClickListener {
             if (selectedAvatar == null){
-                Toast.makeText(requireContext(), "Вы не выбрали картинку", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), requireContext().getString(R.string.you_don_t_choose_picture), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

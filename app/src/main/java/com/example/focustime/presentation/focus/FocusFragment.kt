@@ -108,12 +108,12 @@ class FocusFragment : Fragment(R.layout.fragment_focus) {
             createIndicatorButton.setOnClickListener {
                 if(indicatorSpinner.selectedItem == null){
                     Toast.makeText(requireContext(),
-                        "Нужно выбрать индикатор.",
+                        requireContext().getString(R.string.you_need_choose_indicator),
                         Toast.LENGTH_SHORT).show()
 
                 } else if(translateToSecond() == 0) {
                     Toast.makeText(requireContext(),
-                        "Укажите время",
+                        requireContext().getString(R.string.you_need_write_time),
                         Toast.LENGTH_SHORT).show()
                 } else {
                     goScreenCreateNewTypeIndicator()

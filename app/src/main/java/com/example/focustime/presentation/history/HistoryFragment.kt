@@ -36,7 +36,10 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
         val userId = sharedPreferences.getInt("userId", 0)
 
         viewModel.getIndicators(offlineMode, userId)
-        val periods = arrayOf( "За всё время", "За день", "За месяц", "За год")
+        val periods = arrayOf( requireContext().getString(R.string.all_time),
+            requireContext().getString(R.string.day),
+            requireContext().getString(R.string.month),
+            requireContext().getString(R.string.year))
         val adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periods)
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -50,16 +53,16 @@ class HistoryFragment : Fragment(R.layout.fragment_history) {
                     val adapter = parent?.adapter as? ArrayAdapter<*>
                     val selectedText = adapter?.getItem(selectedItemPosition) ?: ""
                     when(selectedText){
-                        "За день"  -> {
+                        requireContext().getString(R.string.day)  -> {
                             viewModel.filterIndicators(HistoryViewModel.FilterType.DAY)
                         }
-                        "За месяц" -> {
+                        requireContext().getString(R.string.month) -> {
                             viewModel.filterIndicators(HistoryViewModel.FilterType.MONTH)
                         }
-                        "За год" -> {
+                        requireContext().getString(R.string.year) -> {
                             viewModel.filterIndicators(HistoryViewModel.FilterType.YEAR)
                         }
-                        "За всё время" -> {
+                        requireContext().getString(R.string.all_time) -> {
                             viewModel.filterIndicators(HistoryViewModel.FilterType.ALL)
                         }
                     }

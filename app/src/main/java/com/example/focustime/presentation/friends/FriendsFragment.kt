@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.focustime.R
@@ -16,10 +14,8 @@ import com.example.focustime.di.ViewModelFactory
 import com.example.focustime.di.appComponent
 import com.example.focustime.presentation.UIState
 import com.example.focustime.presentation.sendRequest.SendRequestFragment
-import com.example.focustime.presentation.models.ResultUIState
 import com.example.focustime.presentation.acceptRequest.AcceptRequestFragment
 import com.example.focustime.presentation.accountUser.AccountUserFragment
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FriendsFragment : Fragment(R.layout.fragment_friends) {
@@ -35,7 +31,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         super.onViewCreated(view, savedInstanceState)
 
         val friendsAdapter = FriendsAdapter(emptyList(),::accountFriend)
-        friendsAdapter.GetfriendOrRequest(0)
 
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             with(binding) {

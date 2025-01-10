@@ -101,7 +101,7 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
                     val count = clipData.itemCount
                     if(count != 5){
                         Toast.makeText(requireContext(),
-                            "Нужно выбрать пять изображений!",
+                            requireContext().getString(R.string.you_need_choose_five_picture),
                             Toast.LENGTH_LONG)
                             .show()
                         return
@@ -130,7 +130,7 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
         val paramsTv = tv.layoutParams as? ViewGroup.MarginLayoutParams
             ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         paramsTv.setMargins(10, 10, 10, 10)
-        tv.text = "${i+1} стадия"
+        tv.text = (i+1).toString() + " " + requireContext().getString(R.string.stage)
         tv.layoutParams = paramsTv
         binding.containerImages.addView(tv)
 

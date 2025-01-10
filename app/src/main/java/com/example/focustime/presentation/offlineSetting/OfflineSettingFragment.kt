@@ -42,7 +42,7 @@ class OfflineSettingFragment: Fragment(R.layout.fragment_offline_setting) {
         viewModel.stateDelete.observe(viewLifecycleOwner){ state ->
             when(state){
                 is UIState.Success -> {
-                    Toast.makeText(requireContext(), "История очищена", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.history_clear), Toast.LENGTH_SHORT).show()
                 }
                 is UIState.Fail -> {
                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()

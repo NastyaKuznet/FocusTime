@@ -122,7 +122,7 @@ class OpenTypeIndicatorFragment: Fragment(R.layout.fragment_open_type_indicator)
         val paramsTv = tv.layoutParams as? ViewGroup.MarginLayoutParams
             ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         paramsTv.setMargins(10, 10, 10, 10)
-        tv.text = "${i+1} стадия"
+        tv.text = (i+1).toString() + " " +  requireContext().getString(R.string.stage)
         tv.layoutParams = paramsTv
         binding.containerImagesOpen.addView(tv)
 
