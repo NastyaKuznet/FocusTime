@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Типы индикаторов"
+            android:text="@string/action_bar_indicators"
             android:textSize="18sp" />
 
         <ImageView
@@ -36,7 +36,7 @@
         android:id="@+id/indicatorListTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Список типов индикатора"
+        android:text="@string/list_indicator_types"
         android:padding="16dp"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@id/head"/>
@@ -54,7 +54,7 @@
         android:id="@+id/createIndicatorButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Создать новый тип индикатора"
+        android:text="@string/button_create_type_indicators"
         android:layout_margin="16dp"
         app:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toBottomOf="parent"/>

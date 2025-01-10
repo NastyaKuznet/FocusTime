@@ -15,13 +15,6 @@ class FriendsAdapter(
     private val accountFriend: (Int) -> Unit
 ) : RecyclerView.Adapter<FriendsAdapter.FriendViewHolder>() {
 
-    var friendOrRequest = 0;
-
-    fun GetfriendOrRequest(position: Int): Int {
-        friendOrRequest = position
-        return friendOrRequest
-    }
-
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val friendAvatar: ImageView = itemView.findViewById(R.id.friendAvatar)
         val friendNickname: TextView = itemView.findViewById(R.id.friendNickname)

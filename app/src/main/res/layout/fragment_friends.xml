@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Друзья"
+            android:text="@string/action_bar_friends"
             android:textSize="18sp"/>
 
         <ImageView
@@ -41,11 +41,10 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@id/head" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -53,18 +52,25 @@
             android:id="@+id/addFriendButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/friendRequestsButton"
+            android:layout_marginEnd="8dp"
             app:backgroundTint="@color/button_color"
-            android:text="Добавить друга" />
+            android:text="@string/button_add_friend"
+            tools:ignore="MissingConstraints" />
 
         <Button
             android:id="@+id/friendRequestsButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addFriendButton"
+            android:layout_marginStart="8dp"
             app:backgroundTint="@color/button_color"
-            android:text="Заявки в друзья" />
-    </LinearLayout>
+            android:text="@string/button_friend_requests"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <ProgressBar
         android:id="@+id/loading"

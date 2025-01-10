@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Регистрация"
+            android:text="@string/registration"
             android:layout_marginTop="150dp"
             android:textSize="24sp"
             android:layout_gravity="center"
@@ -26,14 +26,14 @@
             android:id="@+id/editTextUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Имя пользователя"
+            android:hint="@string/input_name"
             android:padding="16dp"/>
 
         <EditText
             android:id="@+id/editTextPasswordRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Пароль"
+            android:hint="@string/input_password"
             android:padding="16dp"
             android:inputType="textPassword"/>
 
@@ -42,13 +42,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:backgroundTint="@color/button_color"
-            android:text="Зарегистрироваться"/>
+            android:text="@string/register"/>
 
         <TextView
             android:id="@+id/textViewLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Уже есть аккаунт? Войти"
+            android:text="@string/authorization_already_account"
             android:layout_gravity="center"
             android:paddingTop="16dp"
             android:padding="16dp"/>
@@ -56,16 +56,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Логин может быть длиною не более
-    10 символов, может состоять только из латинских
-    букв и (или) цифр" />
+            android:text="@string/register_info_login" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Пароль может быть длиною
-    не менее 8 символов и не более 10 символов,
-    может состоять только из латинских букв и (или) цифр" />
+            android:text="@string/register_info_password" />
 
         <TextView
             android:id="@+id/offline_mode_button"

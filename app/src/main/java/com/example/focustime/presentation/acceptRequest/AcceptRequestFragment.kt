@@ -45,7 +45,6 @@ class AcceptRequestFragment : Fragment(R.layout.fragment_accept_request) {
                             loading.visibility = View.GONE
                         }
                         friendsAdapter.updateFriends(uiState.value)
-                        //Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_LONG).show()
                     }
                     is UIState.Fail -> {
                         with(binding){
