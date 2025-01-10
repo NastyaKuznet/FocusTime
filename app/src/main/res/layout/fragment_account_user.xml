@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Экран профиля"
+            android:text="@string/action_bar_account_user"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -117,26 +117,30 @@
         android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:minWidth="100dp"
+            android:layout_marginEnd="8dp"
             app:backgroundTint="@color/button_color"
-            android:text="Редактировать" />
+            android:text="@string/button_edit"/>
 
         <Button
             android:id="@+id/exitAccount"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:minWidth="100dp"
             app:backgroundTint="@color/button_color"
-            android:text="Выйти из аккаунта" />
+            android:text="@string/button_exit"/>
+
     </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/loading"

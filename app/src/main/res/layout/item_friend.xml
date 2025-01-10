@@ -23,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Nickname"
+            android:text=""
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_gravity="center_vertical"/>
@@ -32,7 +32,7 @@
             android:id="@+id/friendFocusTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time"
+            android:text=""
             android:textSize="14sp"
             android:layout_marginStart="16dp"
             android:layout_gravity="center_vertical"/>

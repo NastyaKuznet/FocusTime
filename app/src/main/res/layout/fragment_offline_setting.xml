@@ -34,14 +34,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:text="Вы находитесь в оффлайн режиме. В данном режиме все сохраняется локально на телефоне. Вы можете удалять историю здесь."
+        android:text="@string/offline_info"
         app:layout_constraintTop_toBottomOf="@id/head"/>
 
     <Button
         android:id="@+id/delete_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Очистить историю"
+        android:text="@string/button_clear"
         android:layout_margin="15dp"
         app:backgroundTint="@color/button_color"
         app:layout_constraintTop_toBottomOf="@id/text_offline"
@@ -51,7 +51,7 @@
         android:id="@+id/exit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Выйти из оффлайн режима"
+        android:text="@string/button_exit_offline"
         android:layout_margin="15dp"
         app:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toBottomOf="parent"

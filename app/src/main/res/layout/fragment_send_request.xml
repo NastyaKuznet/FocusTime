@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Добавить друга"
+            android:text="@string/action_bar_send_request"
             android:textSize="18sp" />
 
         <ImageView
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="Введите ник пользователя"/>
+        android:hint="@string/input_name_friend"/>
 
     <Button
         android:id="@+id/buttonAdd"
@@ -43,6 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="130dp"
         app:backgroundTint="@color/button_color"
-        android:text="Добавить" />
+        android:text="@string/button_add" />
 
 </LinearLayout>

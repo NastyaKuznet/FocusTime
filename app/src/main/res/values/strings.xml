@@ -1,6 +1,63 @@
 <resources>
     <string name="app_name">FocusTime</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="offline_mode_button_text">Войти в офлайн режим</string>
+
+    <string name="action_bar_accept_request">Завяки в друзья</string>
+    <string name="action_bar_account_user">Экран профиля</string>
+    <string name="action_bar_avatar">Аватарки</string>
+    <string name="action_bar_focus">Режим фокусировки</string>
+    <string name="action_bar_friends">Друзья</string>
+    <string name="action_bar_history">Индикаторы за период</string>
+    <string name="action_bar_indicators">Типы индикаторов</string>
+    <string name="action_bar_new_type_indicator">Создание нового типа индикатора</string>
+    <string name="action_bar_open_type_indicator">Создание нового типа индикатора</string>
+    <string name="action_bar_send_request">Добавить друга</string>
+
+    <string name="button_edit">Редактировать</string>
+    <string name="button_exit">Выйти из аккаунта</string>
+    <string name="button_save">Сохранить</string>
+    <string name="button_change_theme">Поменять тему</string>
+    <string name="button_enter">Войти</string>
+    <string name="button_start_focusing">Начать фокусироваться</string>
+    <string name="button_friend_requests">Заявки в друзья</string>
+    <string name="button_add_friend">Добавить друга</string>
+    <string name="button_create_type_indicators">Создать новый тип индикатора</string>
+    <string name="button_abort">Прервать</string>
+    <string name="button_pause">Пауза</string>
+    <string name="button_upload">Загрузить изображения</string>
+    <string name="button_clear">Очистить историю</string>
+    <string name="button_exit_offline">Выйти из оффлайн режима</string>
+    <string name="button_delete">Удалить</string>
+    <string name="button_add">Добавить</string>
+
+    <string name="plus">+</string>
+    <string name="zero">00</string>
+    <string name="colon">:</string>
+
+    <string name="authorization">Авторизация</string>
+    <string name="registration">Регистрация</string>
+    <string name="register_not_account">Нет аккаунта? Зарегистрироваться</string>
+    <string name="authorization_already_account">Уже есть аккаунт? Войти</string>
+    <string name="choose_avatar">Выберите аватар</string>
+    <string name="select_type_indicator">Выберите тип индикатора</string>
+    <string name="select_time">Укажите время фокусировки</string>
+    <string name="list_indicator_types">Список типов индикатора</string>
+    <string name="time_focus">Время сосредоточиться</string>
+    <string name="upload_images">Загрузить 5 изображения состояния индикатора:</string>
+    <string name="offline_info">Вы находитесь в оффлайн режиме. В данном режиме все сохраняется локально на телефоне. Вы можете удалять историю здесь.</string>
+    <string name="name_indicator">Название индикатора</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="register_info_login">Логин может быть длиною не более
+    10 символов, может состоять только из латинских
+    букв и (или) цифр</string>
+    <string name="register_info_password">Пароль может быть длиною
+    не менее 8 символов и не более 10 символов,
+    может состоять только из латинских букв и (или) цифр</string>
+
+    <string name="input_statuc">Ваш новый статус</string>
+    <string name="input_name">Имя пользователя</string>
+    <string name="input_password">Пароль</string>
+    <string name="input_name_indicator">Введите название:</string>
+    <string name="input_name_friend">Введите ник пользователя</string>
 </resources>

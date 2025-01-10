@@ -1,7 +1,14 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.FocusTime" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<resources>
+    <!-- Base application theme (dark). -->
+    <style name="Base.Theme.FocusTime" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/light_green</item>
+        <item name="colorPrimaryVariant">@color/light_green_darker</item>
+        <item name="android:statusBarColor">@color/light_green_darker</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">?attr/colorControlNormal</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="Theme.FocusTime" parent="Base.Theme.FocusTime" />
 </resources>
+

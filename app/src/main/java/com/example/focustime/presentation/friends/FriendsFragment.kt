@@ -35,7 +35,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         super.onViewCreated(view, savedInstanceState)
 
         val friendsAdapter = FriendsAdapter(emptyList(),::accountFriend)
-        friendsAdapter.GetfriendOrRequest(0)
         binding.friendsList.adapter = friendsAdapter
         binding.friendsList.layoutManager = LinearLayoutManager(context)
 
