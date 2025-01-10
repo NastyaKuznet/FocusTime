@@ -139,6 +139,8 @@ class NewTypeIndicatorFragment: Fragment(R.layout.fragment_new_type_indicator) {
             ?: ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         paramsIv.setMargins(10, 10, 10, 10)
         iv.layoutParams = paramsIv
+        iv.adjustViewBounds = true
+        iv.scaleType = ImageView.ScaleType.FIT_CENTER
         iv.setImageBitmap(bitmap)
         binding.containerImages.addView(iv)
     }
